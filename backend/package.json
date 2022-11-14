@@ -16,6 +16,7 @@
   },
   "homepage": "https://github.com/HHG-TecLap/troedelmarkt#readme",
   "dependencies": {
+    "decimal.js": "^10.4.2",
     "express": "^4.18.2",
     "sequelize": "^6.25.5",
     "sqlite3": "^5.1.2"
