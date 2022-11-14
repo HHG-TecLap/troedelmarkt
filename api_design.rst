@@ -12,21 +12,21 @@ Format:
 Schemas
 =======
 Seller
-******
+~~~~~~
 API
 ---
-```
-{
-    id: string,
-    name: string,
-    rate: string,
-    balance?: string
-    revenue?: string 
-    provision?: string 
-    // rate and balance are strings to prevent floating-point imprecision
-    // balance, revenue, provision may be missing in client requests (POST /seller and ...)
-}
-```
+::
+
+    {
+        id: string,
+        name: string,
+        rate: string,
+        balance?: string
+        revenue?: string 
+        provision?: string 
+        // rate and balance are strings to prevent floating-point imprecision
+        // balance, revenue, provision may be missing in client requests (POST /seller and ...)
+    }
 
 Frontend (C#)
 --------------
@@ -37,30 +37,32 @@ Trader (class)
 - _ProvisionRate: decimal
 + Provision: decimal
 
-+ Property ProvisionRate: decimal (_ProvisionRate*100)
++ Property ProvisionRate: decimal (_ProvisionRate~100)
 
 SellerModify
-************
+~~~~~~~~~~~~
 API
 ---
-```
-{
-    name?: string,
-    rate?: string
-    // Any of these may be missing, in which case they are not changed
-}
-```
+::
+
+    {
+        name?: string,
+        rate?: string
+        // Any of these may be missing, in which case they are not changed
+    }
+
 
 Item
-****
+~~~~
 API
 ---
-```
-{
-    sellerId: string,
-    price: string
-}
-```
+::
+
+    {
+        sellerId: string,
+        price: string
+    }
+
 
 Frontend (C#)
 -------------
@@ -69,42 +71,43 @@ TransactionItem (class)
 + Price: decimal
 
 MalformedTransaction
-********************
+~~~~~~~~~~~~~~~~~~~~
 API
 ---
-```
-{
-    "{item_index}" : [
-        JSONArray[string], // Contains all non-parsable keys
-        JSONArray[string] // Contains keys of all invalid values
-    ],
-    \...
-}
-```
+::
+
+    {
+        "{item_index}" : [
+            JSONArray[string], // Contains all non-parsable keys
+            JSONArray[string] // Contains keys of all invalid values
+        ],
+        \...
+    }
+
 
 Endpoints
 =========
 POST /seller
-***************************
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Body: Schema/Seller
 
 Responses
 ---------------------------
 + 201 Created
-    Content-Type: text/json
-    Content: Schema/Seller
+    + Content-Type: text/json
+    + Content: Schema/Seller
 + 400 Bad Request
-    Content-Type: text/plain
-    Content: "Bad Request"
+    + Content-Type: text/plain
+    + Content: "Bad Request"
 + 401 Unauthorized
-    Content-Type: text/plain
-    Content: "Bearer token is invalid"
+    + Content-Type: text/plain
+    + Content: "Bearer token is invalid"
 + 409 Conflict
-    Content-Type: text/plain
-    Content: "A seller with this name already exists"
+    + Content-Type: text/plain
+    + Content: "A seller with this name already exists"
 
 GET /sellers
-***************************
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Responses
 ---------------------------
@@ -116,7 +119,7 @@ Responses
     + Content: "Bearer token is invalid"
 
 GET /seller/{id}
-***************************
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Responses
 ---------------------------
@@ -131,7 +134,7 @@ Responses
     + Content: "A seller with the id {id} doesn't exist"
 
 DELETE /seller/{id}
-***************************
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Responses
 ---------------------------
@@ -149,7 +152,7 @@ Responses
     + Content: "A seller with the id {id} doesn't exist"
 
 PATCH /seller/{id}
-***************************
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Body: Schema/SellerModify
 
 Responses
@@ -168,7 +171,7 @@ Responses
     + Content: "A seller with the id {id} doesn't exist"
 
 POST /sell
-***************************
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Body: JSONArray[Schema/Item]
 
 Responses
@@ -185,7 +188,7 @@ Responses
     + Content: "Bearer token is invalid"
 
 POST /login
-***************************
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Body:
     + Content-Type: text/plain
     + // This is just the password the user entered
@@ -200,7 +203,7 @@ Responses
     + Content: "The password you entered is incorrect"
 
 GET /exportcsv
-***************************
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 + 200 OK
     + Content-Type: text/csv
     + Content: Database exported as CSV-file. (Intended for confirmation)
@@ -209,7 +212,7 @@ GET /exportcsv
     + Content: "Bearer token is invalid"
 
 GET /teapot
-***************************
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Responses
 ---------------------------
 + 418 I'm a teapot
