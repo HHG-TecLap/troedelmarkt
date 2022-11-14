@@ -30,12 +30,14 @@ API
 
 Frontend (C#)
 --------------
-Trader (class)
-+ TraderID: string
-+ Name: string
-+ Balance: decimal
-- _ProvisionRate: decimal
-+ Provision: decimal
+::
+
+    Trader (class)
+    + TraderID: string
+    + Name: string
+    + Balance: decimal
+    - _ProvisionRate: decimal
+    + Provision: decimal
 
 + Property ProvisionRate: decimal (_ProvisionRate~100)
 
@@ -66,9 +68,11 @@ API
 
 Frontend (C#)
 -------------
-TransactionItem (class)
-+ Trader: string
-+ Price: decimal
+::
+
+    TransactionItem (class)
+    + Trader: string
+    + Price: decimal
 
 MalformedTransaction
 ~~~~~~~~~~~~~~~~~~~~
