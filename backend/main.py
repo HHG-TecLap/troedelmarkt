@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, Response
+from fastapi import FastAPI, Depends, Response, Body, Request
 from fastapi.responses import StreamingResponse
 from .database import session_factory, Base, engine
 from .schemas import *
@@ -9,6 +9,9 @@ from decimal import Decimal
 from threading import Lock
 from io import StringIO
 from csv import writer as csv_writer
+from hmac import compare_digest
+from .config_reader import CONFIG
+import jwt
 
 Base.metadata.create_all(engine)
 
@@ -22,6 +25,7 @@ def get_session():
 
 app = FastAPI()
 database_lock = Lock()
+REGISTERED_TOKENS : set[str] = set()
 
 # @app.get("/login")
 
@@ -170,3 +174,22 @@ def ep_exportcsv(session: Session = Depends(get_session)):
 @app.get("/teapot",responses={418:{"description":"This is a teapot"}})
 def ep_teapot():
     return Response("I'm a teapot",418)
+
+login_incrementer = 0
+@app.post("/login", responses={
+    200 : {"example":"Bearer ewuiZHrhkÖefdi5748ogrhekl"},
+    401 : {"description":"The password passed is incorrect"}
+})
+def ep_login(request: Request, password: str = Body(media_type="text/plain")):
+    if not compare_digest(password,CONFIG["service"]["pswd"]):
+        return Response("The password you entered is incorrect",401)
+    
+    global login_incrementer
+    token = jwt.encode({
+        "host":request.client.host,
+        "inc":login_incrementer
+    },CONFIG["service"]["secret"],"HS256")
+    login_incrementer += 1
+    token = f"Bearer {token}"
+    REGISTERED_TOKENS.add(token)
+    return Response(token,200,media_type="text/plain")
