@@ -1,5 +1,6 @@
-from fastapi import FastAPI, Depends, Response, Body, Request
+from fastapi import FastAPI, Depends, Response, Body, Request, Security, HTTPException
 from fastapi.responses import StreamingResponse
+from fastapi.security.api_key import APIKeyBase, APIKey, APIKeyIn
 from .database import session_factory, Base, engine
 from .schemas import *
 from .ormmodels import Seller
@@ -12,6 +13,8 @@ from csv import writer as csv_writer
 from hmac import compare_digest
 from .config_reader import CONFIG
 import jwt
+from time import time as timestamp
+from typing import Literal
 
 Base.metadata.create_all(engine)
 
@@ -27,12 +30,39 @@ app = FastAPI()
 database_lock = Lock()
 REGISTERED_TOKENS : set[str] = set()
 
-# @app.get("/login")
+class CustomKeyAuthorisation(APIKeyBase):
+    def __init__(self,*,description: str|None=None):
+        self.scheme_name = "Bearer"
+        self.model: APIKey = APIKey(
+            **{"in":APIKeyIn.header}, 
+            # Python doesn't accept "in" as a kwarg
+            name="Authorization"
+        )
+    
+    @staticmethod
+    def is_authorised(token: str) -> bool:
+        for reg_token in REGISTERED_TOKENS:
+            if compare_digest(reg_token,token):
+                return True
+        return False
+    
+    def __call__(self, request: Request) -> Literal[True]:
+        api_key = request.headers.get(self.model.name)
+        if api_key is None or not self.is_authorised(api_key):
+            raise HTTPException(
+                401,
+                detail="Bearer token is invalid",
+                headers={"WWW-Authentication":self.model.name}
+            )
+        return True
 
 @app.get("/sellers", responses={
     401 : {"description":"The bearer token is invalid or not passed"}
 })
-def ep_get_sellers(session: Session = Depends(get_session)):
+def ep_get_sellers(
+    session: Session = Depends(get_session),
+    _=Security(CustomKeyAuthorisation())
+):
     return [
         SellerServerModel.from_sql(seller) 
         for seller in  crud.get_all_sellers(session)
@@ -44,7 +74,8 @@ def ep_get_sellers(session: Session = Depends(get_session)):
 })
 def ep_post_seller(
     seller: SellerClientModel, 
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    _=Security(CustomKeyAuthorisation())
 ):
     try:
         return SellerServerModel.from_sql(
@@ -59,7 +90,8 @@ def ep_post_seller(
 })
 def ep_get_seller(
     seller_id: str, 
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    _=Security(CustomKeyAuthorisation())
 ):
     seller = crud.get_seller(session,seller_id)
     if seller is None:
@@ -74,7 +106,11 @@ def ep_get_seller(
     403 : {"description":"The seller specified has a balance that is not 0"},
     404 : {"description":"There is no seller with the specified id"}
 })
-def ep_delete_seller(seller_id: str, session: Session = Depends(get_session)):
+def ep_delete_seller(
+    seller_id: str, 
+    session: Session = Depends(get_session),
+    _=Security(CustomKeyAuthorisation())
+):  
     seller = crud.get_seller(session,seller_id)
     if seller is None:
         return Response(
@@ -98,8 +134,9 @@ def ep_delete_seller(seller_id: str, session: Session = Depends(get_session)):
 def ep_patch_seller(
     seller_id: str, 
     modification: SellerModifyModel, 
-    session: Session = Depends(get_session)
-):
+    session: Session = Depends(get_session),
+    _=Security(CustomKeyAuthorisation())
+): 
     return SellerServerModel.from_sql(
         crud.update_seller(session,seller_id,modification)
     )
@@ -112,7 +149,11 @@ def ep_patch_seller(
     },
     401 : {"description":"The bearer token is invalid or not passed"}
 })
-def ep_sell(items: tuple[ItemModel], session: Session = Depends(get_session)):
+def ep_sell(
+    items: tuple[ItemModel], 
+    session: Session = Depends(get_session),
+    _=Security(CustomKeyAuthorisation)
+):
     sql_sellers = {
         seller.id: seller 
         for seller in crud.get_all_sellers(session)
@@ -150,7 +191,10 @@ def ep_sell(items: tuple[ItemModel], session: Session = Depends(get_session)):
 @app.get("/exportcsv", responses={
     401 : {"description":"The bearer token is invalid or not passed"}
 })
-def ep_exportcsv(session: Session = Depends(get_session)):
+def ep_exportcsv(
+    session: Session = Depends(get_session),
+    _=Security(CustomKeyAuthorisation())
+):
     sellers = crud.get_all_sellers(session)
     io = StringIO()
     writer = csv_writer(io)
@@ -175,7 +219,6 @@ def ep_exportcsv(session: Session = Depends(get_session)):
 def ep_teapot():
     return Response("I'm a teapot",418)
 
-login_incrementer = 0
 @app.post("/login", responses={
     200 : {"example":"Bearer ewuiZHrhkÖefdi5748ogrhekl"},
     401 : {"description":"The password passed is incorrect"}
@@ -187,9 +230,8 @@ def ep_login(request: Request, password: str = Body(media_type="text/plain")):
     global login_incrementer
     token = jwt.encode({
         "host":request.client.host,
-        "inc":login_incrementer
+        "timestamp":timestamp()
     },CONFIG["service"]["secret"],"HS256")
-    login_incrementer += 1
     token = f"Bearer {token}"
     REGISTERED_TOKENS.add(token)
     return Response(token,200,media_type="text/plain")
