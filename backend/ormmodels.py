@@ -7,5 +7,5 @@ class Seller(Base):
 
     id = Column(Text,nullable=False,primary_key=True)
     name = Column(Text,nullable=False)
-    rate = Column(Text,nullable=True)
+    rate = Column(Text,nullable=False)
     balance = Column(Text,nullable=False,default=0)

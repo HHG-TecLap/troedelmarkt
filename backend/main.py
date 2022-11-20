@@ -152,7 +152,7 @@ def ep_patch_seller(
 def ep_sell(
     items: tuple[ItemModel], 
     session: Session = Depends(get_session),
-    _=Security(CustomKeyAuthorisation)
+    _=Security(CustomKeyAuthorisation())
 ):
     sql_sellers = {
         seller.id: seller 

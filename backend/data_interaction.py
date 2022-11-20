@@ -45,8 +45,10 @@ def update_seller(
     if seller is None:
         raise KeyError
 
-    seller.name = schema.name
-    seller.rate = str(schema.rate) if schema.rate is not None else None
+    if schema.name is not None:
+        seller.name = schema.name
+    if schema.rate is not None:
+        seller.rate = str(schema.rate)
 
     session.commit()
     return seller

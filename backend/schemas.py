@@ -1,6 +1,8 @@
 from .ormmodels import Seller
+from .config_reader import CONFIG
 from pydantic import BaseModel
 from decimal import Decimal
+from typing import Optional
 
 class BaseModel(BaseModel):
     class Config:
@@ -19,7 +21,7 @@ __all__ = (
 class SellerClientModel(BaseModel):
     id: str
     name: str
-    rate: Decimal|None
+    rate: Decimal = Decimal(CONFIG["service"]["default_rate"])
 
     def to_sql(self):
         return Seller(
@@ -36,7 +38,10 @@ class SellerServerModel(SellerClientModel):
     @staticmethod
     def from_sql(obj: Seller):
         balance = Decimal(obj.balance)
-        rate = Decimal(obj.rate)
+        if obj.rate is None:
+            rate = None
+        else:
+            rate = Decimal(obj.rate)
         return SellerServerModel(
             id=obj.id,
             name=obj.name,
@@ -56,8 +61,8 @@ class SellerServerModel(SellerClientModel):
         pass
 
 class SellerModifyModel(BaseModel):
-    name: str|None
-    rate: Decimal|None
+    name: Optional[str] = None
+    rate: Optional[Decimal] = None
 
 class ItemModel(BaseModel):
     sellerId: str
