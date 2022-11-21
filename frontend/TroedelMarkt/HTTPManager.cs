@@ -90,7 +90,7 @@ namespace TroedelMarkt {
 			UriBuilder builder = new UriBuilder(
 				"http",
 				ip_or_hostname,
-				(port.HasValue) ? port.Value : 80
+				(port.HasValue) ? port.Value : 3080
 			);
 
 			return builder.Uri;
