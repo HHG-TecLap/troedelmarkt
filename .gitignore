@@ -1,5 +1,6 @@
 .vscode
 backend/config.cfg
 backend/*.db
+backend/transactions/
 venv
 __pycache__/

@@ -12,6 +12,7 @@ from io import StringIO
 from csv import writer as csv_writer
 from hmac import compare_digest
 from .config_reader import CONFIG
+from .transaction_logger import TransactionLogger
 import jwt
 from time import time as timestamp
 from typing import Literal
@@ -26,6 +27,8 @@ def get_session():
         finally:
             session.close()
 
+transaction_logger = TransactionLogger()
+transaction_logger.start()
 app = FastAPI()
 database_lock = Lock()
 REGISTERED_TOKENS : set[str] = set()
@@ -150,7 +153,8 @@ def ep_patch_seller(
     401 : {"description":"The bearer token is invalid or not passed"}
 })
 def ep_sell(
-    items: tuple[ItemModel], 
+    request: Request,
+    items: list[ItemModel], 
     session: Session = Depends(get_session),
     _=Security(CustomKeyAuthorisation())
 ):
@@ -182,6 +186,10 @@ def ep_sell(
         balance = Decimal(seller.balance)
         seller.balance = str(balance+item.price)
     session.commit()
+    transaction_logger.add_transaction(
+        *items,
+        origin_ip=request.client.host
+    )
     
     return [
         SellerServerModel.from_sql(seller) 
