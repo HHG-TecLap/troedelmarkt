@@ -87,7 +87,7 @@ namespace TroedelMarkt {
          * This is an asynchronous method.
          * It returns a stream of the csv-file.
          * Raises:
-         *  Unauthorized Exception: The client is not authenticated.
+         *  UnauthorizedException: The client is not authenticated.
         */
         public abstract Task<System.IO.Stream> ExportCSV();
     }
