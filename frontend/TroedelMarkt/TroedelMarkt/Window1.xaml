@@ -1,0 +1,63 @@
+﻿<Window x:Class="TroedelMarkt.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TroedelMarkt"
+        mc:Ignorable="d"
+        Title="Trödelmarkt Manager Händleransicht" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <DataGrid x:Name="DGTrader" d:ItemsSource="{d:SampleData ItemCount=5}" ItemsSource="{Binding Traders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Window1}}}" AutoGenerateColumns="False" Grid.ColumnSpan="2" CellEditEnding="DGCellEditEnd" >
+            <DataGrid.Columns>
+                <!--Make TraderID, Balance, Revenue, Provision Databinding Oneway-->
+                <DataGridTextColumn Header="Händler ID" Binding="{Binding TraderID , Mode=OneWay}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name,Mode=TwoWay}"/>
+                <DataGridTextColumn Header="Bilanz" Binding="{Binding Balance, StringFormat=C, ConverterCulture=de-De, Mode=OneWay}"/>
+                <DataGridTextColumn Header="Gewinn" Binding="{Binding Revenue, StringFormat=C ,ConverterCulture=de-De, Mode=OneWay}"/>
+                <DataGridTextColumn Header="Provisionsrate in %" Binding="{Binding ProvisionRatePerc, Mode=TwoWay, StringFormat=\{0:N\}}"/>
+                <DataGridTextColumn Header="Provision" Binding="{Binding Provision, StringFormat=C, ConverterCulture=de-De, Mode=OneWay}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="ExportCSV" Content="Daten exportieren" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10,10,10,10" Click="ExportCSV_Click"/>
+            <StackPanel VerticalAlignment="Bottom">
+                <Label Content="Händler ID" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="10,10,10,10"/>
+                <TextBox x:Name="TBoxTraderID" TextWrapping="Wrap" VerticalAlignment="Bottom" Margin="10,10,10,10">
+                    <TextBox.Text>
+                        <Binding Path ="newTraderID" RelativeSource="{RelativeSource AncestorType={x:Type local:Window1}}" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:TraderIDValidation pattern="^[a-zA-Z0-9]*$"/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+                <Button x:Name="BtnAddTdr" Content="Händler hinzufügen" Margin="10,10,10,10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Click="BtnAddTdr_Click"/>
+            </StackPanel>
+            <Button x:Name="BtnDelTdr" Content="Händler löschen" Margin="10,10,10,10" VerticalAlignment="Bottom" Click="BtnDelTdr_Click"/>
+        </StackPanel>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="TBlockSumm" Margin="10,10,10,10" TextWrapping="Wrap" Text="Summe"/>
+            <TextBlock x:Name="TBlockProvSumm" Grid.Column="1" Margin="10,10,10,10" TextWrapping="Wrap" Text="Prov Summe"/>
+            <StackPanel Grid.Row="1" VerticalAlignment="Bottom">
+                <TextBlock x:Name="TBlockDebug" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="For debugging"/>
+                <Button x:Name="BtnUpdateData" Content="Daten aktualisieren" Margin="10,10,10,10" VerticalAlignment="Center" Click="BtnUpdateData_Click" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
