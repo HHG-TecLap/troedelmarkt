@@ -4,6 +4,6 @@ backend/*.db
 backend/transactions/
 venv
 __pycache__/
-frontend/bin/
+frontend/TroedelMarkt/bin/
 .vs/
-frontend/.vs/
+frontend/TroedelMarkt/.vs/
