@@ -358,7 +358,7 @@ namespace TroedelMarkt
                     case HttpStatusCode.BadRequest:
                         throw new ClientException($"The server received an invaild URI format. This is always an internal error", e);
                     default:
-                        throw new ClientException($"The server responded with an unexpected status code {e.code}", e);
+                        throw new ClientException($"The server responded with an unexpected status code {e.code}\n{await e.content.ReadAsStringAsync()}", e);
                 }
             }
 
