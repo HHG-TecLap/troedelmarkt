@@ -1,0 +1,5 @@
+C:\Users\felix\source\repos\TroedelMarkt\TroedelMarkt\bin\Debug\net6.0-windows\publish\TroedelMarkt.exe
+C:\Users\felix\source\repos\TroedelMarkt\TroedelMarkt\bin\Debug\net6.0-windows\publish\TroedelMarkt.dll
+C:\Users\felix\source\repos\TroedelMarkt\TroedelMarkt\bin\Debug\net6.0-windows\publish\TroedelMarkt.deps.json
+C:\Users\felix\source\repos\TroedelMarkt\TroedelMarkt\bin\Debug\net6.0-windows\publish\TroedelMarkt.runtimeconfig.json
+C:\Users\felix\source\repos\TroedelMarkt\TroedelMarkt\bin\Debug\net6.0-windows\publish\TroedelMarkt.pdb
