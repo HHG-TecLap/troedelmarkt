@@ -16,7 +16,7 @@ namespace TroedelMarkt
         {
             return new JsonObject(){
                 { "sellerId", Trader},
-                { "price", Value.ToString()}
+                { "price", Value.ToString(System.Globalization.CultureInfo.InvariantCulture)}
             };
         }
     }

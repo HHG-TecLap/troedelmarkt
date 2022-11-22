@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Nodes;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Nodes;
 
 namespace TroedelMarkt
 {
     public class Trader
     {
+        private static System.Globalization.CultureInfo InvariantCulture = System.Globalization.CultureInfo.InvariantCulture;
+
         public string TraderID { get; set; }
         public string Name { get; set; }
         public decimal Balance { get; set; }
@@ -44,10 +39,10 @@ namespace TroedelMarkt
             return new Trader(
                 data["id"]!.ToString(),
                 data["name"]!.ToString(),
-                decimal.Parse(data["balance"]!.ToString()),
-                decimal.Parse(data["revenue"]!.ToString()),
-                decimal.Parse(data["rate"]!.ToString()),
-                decimal.Parse(data["provision"]!.ToString())
+                decimal.Parse(data["balance"]!.ToString(),InvariantCulture),
+                decimal.Parse(data["revenue"]!.ToString(),InvariantCulture),
+                decimal.Parse(data["rate"]!.ToString(),InvariantCulture),
+                decimal.Parse(data["provision"]!.ToString(),InvariantCulture)
             );
         }
 
@@ -55,10 +50,10 @@ namespace TroedelMarkt
         {
             TraderID = data["id"]!.ToString();
             Name = data["name"]!.ToString();
-            ProvisionRate = decimal.Parse(data["rate"]!.ToString());
-            Balance = decimal.Parse(data["balance"]!.ToString());
-            Revenue = decimal.Parse(data["revenue"]!.ToString());
-            Provision = decimal.Parse(data["provision"]!.ToString());
+            ProvisionRate = decimal.Parse(data["rate"]!.ToString(),InvariantCulture);
+            Balance = decimal.Parse(data["balance"]!.ToString(),InvariantCulture);
+            Revenue = decimal.Parse(data["revenue"]!.ToString(),InvariantCulture);
+            Provision = decimal.Parse(data["provision"]!.ToString(),InvariantCulture);
             return this;
         }
 
@@ -67,7 +62,7 @@ namespace TroedelMarkt
             return new JsonObject() {
                 {"id", TraderID },
                 {"name", Name},
-                {"rate", ProvisionRate.ToString()},
+                {"rate", ProvisionRate.ToString(InvariantCulture)},
                 // balance, revenue, and provision are not passed to the server
             };
         }

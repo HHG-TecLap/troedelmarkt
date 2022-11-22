@@ -72,7 +72,7 @@ namespace TroedelMarkt
                 decimal Value = 0m;
                 try
                 {
-                    Value = decimal.Parse(TBoxElementValue.Text);
+                    Value = decimal.Parse(TBoxElementValue.Text,System.Globalization.CultureInfo.InvariantCulture);
                 }
                 catch (Exception ex) { }
                 Transactions.Add(new TransactionItem(CBTraderID.Text, 0m));

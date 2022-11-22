@@ -154,7 +154,7 @@ namespace TroedelMarkt
             };
             if (rate is not null)
             {
-                requestBody["rate"] = rate.ToString();
+                requestBody["rate"] = rate.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
             }
             try
             {
