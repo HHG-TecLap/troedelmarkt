@@ -3,3 +3,4 @@ backend/config.cfg
 backend/*.db
 venv
 __pycache__/
+frontend/bin/
