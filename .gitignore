@@ -5,3 +5,5 @@ backend/transactions/
 venv
 __pycache__/
 frontend/bin/
+.vs/
+frontend/.vs/
