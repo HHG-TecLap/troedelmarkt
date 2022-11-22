@@ -38,7 +38,7 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <StackPanel Grid.Column="1">
-            <Label Content="Element bearbeiten" Margin="10,10,10,10"/>
+            <Label Content="Artikel bearbeiten" Margin="10,10,10,10"/>
             <Grid Height="200">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
@@ -52,19 +52,27 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock  TextWrapping="Wrap" Text="Händler ID" Margin="10,10,10,10"/>
                 <TextBlock Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="Betrag"/>
-                <TextBox x:Name="TBoxTraderID" Grid.Column="1" Margin="10,10,10,10" TextWrapping="Wrap" Text="{Binding SelectedValue.Trader, ElementName=LbTransactions, Mode=TwoWay}" TextChanged="TbUpdateBinding"/>
+                <ComboBox x:Name="CBTraderID" IsEditable="True"  Margin="10,10,10,10"  Grid.Column="1"  ItemsSource="{Binding TraderIDs, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}">
+                    <ComboBox.Text>
+                        <Binding Path="SelectedItem.Trader" ElementName="LbTransactions" Mode="TwoWay">
+                            <Binding.ValidationRules>
+                                <local:TraderIDValidation pattern="^[a-zA-Z0-9]*$"/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </ComboBox.Text>
+                </ComboBox>
                 <TextBox x:Name="TBoxElementValue" Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="{Binding SelectedItem.Value, StringFormat=C, ConverterCulture=de-De, ElementName=LbTransactions, Mode=TwoWay}" TextChanged="TbUpdateBinding"/>
-                <Button x:Name="BtnDeleteElement" Content="Element löschen" Margin="10,10,10,10" Click="BtnDeleteElement_Click" Grid.Column="1" Grid.Row="2"/>
-                <Button x:Name="BtnAddElement" Content="Element hinzufügen" Margin="10,10,10,10" Click="BtnAddElement_Click"  Grid.Row="2"/>
-                <Button x:Name="BtnExitTransaction" Content="Transaktion abbrechen" Margin="10,10,10,10" Click="BtnExitTransaction_Click" Grid.Column="1" Grid.Row="3"/>
+                <Button x:Name="BtnAddElement" Content="Artikel hinzufügen" Margin="10,10,10,10" Click="BtnAddElement_Click"  Grid.Row="2"/>
+                <Button x:Name="BtnDeleteElement" Content="Artikel löschen" Margin="10,10,10,10" Click="BtnDeleteElement_Click" Grid.Column="1" Grid.Row="2"/>
                 <Button x:Name="BtnMakeTRansaction" Content="Transaktion abschließen" Width="NaN" Margin="10,10,10,10" Grid.Row="3" Click="BtnMakeTRansaction_Click" />
+                <Button x:Name="BtnExitTransaction" Content="Transaktion abbrechen" Margin="10,10,10,10" Click="BtnExitTransaction_Click" Grid.Column="1" Grid.Row="3"/>
             </Grid>
+            <Button x:Name="BtnUpdate" Content="Händlerliste aktualisieren" Margin="10,10,10,10" HorizontalAlignment="Right" Click="BtnUpdate_Click"/>
         </StackPanel>
         <StackPanel Grid.Row="1">
             <TextBlock x:Name="TBlockSumm" TextWrapping="Wrap" Text="Summe" Margin="10,10,10,10"/>
         </StackPanel>
         <StackPanel Grid.Column="1" Grid.Row="1">
-            <Button Content="Einstellungen" Margin="10,10,10,10"/>
             <Button x:Name="BtnTraderView" Content="Händleransicht" Margin="10,10,10,10" Click="BtnTraderView_Click" />
         </StackPanel>
     </Grid>

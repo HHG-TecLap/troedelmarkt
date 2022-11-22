@@ -5,13 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TroedelMarkt"
         mc:Ignorable="d"
-        Title="LoginWindow" Height="300" Width="500" WindowStyle="ToolWindow" ResizeMode="NoResize">
-    <Window.Background>
-        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-            <GradientStop Color="Red"/>
-            <GradientStop Color="Blue" Offset="1"/>
-        </LinearGradientBrush>
-    </Window.Background>
+        Title="Trödelmarkt Manager Login" Height="360" Width="500" WindowStyle="ToolWindow" ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -22,21 +16,37 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.RowSpan="2">
+        <StackPanel >
             <Label Content="Datenbank Adresse" VerticalContentAlignment="Center" Margin="10,10,10,10"/>
-            <TextBox TextWrapping="Wrap" Text="TextBox" Margin="10,10,10,10"/>
+            <TextBox x:Name="TBoxAdress" TextWrapping="Wrap" Margin="10,10,10,10">
+                <TextBox.Text>
+                    <Binding Path ="Adress" RelativeSource="{RelativeSource AncestorType={x:Type local:LoginWindow}}" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <local:TraderIDValidation pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)[.]){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </StackPanel>
-        <StackPanel Grid.Column="1" Grid.RowSpan="2">
+        <StackPanel Grid.Column="1">
             <Label Content="Port" Margin="10,10,10,10"/>
-            <TextBox TextWrapping="Wrap" Text="TextBox" Margin="10,10,10,10"/>
+            <TextBox x:Name="TBoxPort" TextWrapping="Wrap" Margin="10,10,10,10">
+                <TextBox.Text>
+                    <Binding Path ="Port" RelativeSource="{RelativeSource AncestorType={x:Type local:LoginWindow}}" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <local:PortValidation/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
             <Label Content="Passwort" Margin="10,10,10,10" HorizontalContentAlignment="Center"/>
-            <PasswordBox Margin="10,10,10,10"/>
+            <PasswordBox x:Name="PBoxPassword" Margin="10,10,10,10" Password="ChangeMe!"/>
         </StackPanel>
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
             <Button x:Name="TbnLogin" Content="Anmelden" Margin="10,10,10,10" Click="TbnLogin_Click" IsDefault="True"/>
-            <TextBlock x:Name="TBoxResponce" TextWrapping="Wrap" Margin="10,10,10,10" TextAlignment="Center" Text="TextBox"/>
+            <TextBlock x:Name="TBlockResponce" TextWrapping="Wrap" Margin="10,10,10,10" TextAlignment="Center"/>
         </StackPanel>
     </Grid>
 </Window>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Nodes;
@@ -14,28 +15,32 @@ namespace TroedelMarkt
         public string Name { get; set; }
         public decimal Balance { get; set; }
         public decimal ProvisionRate { get; set; }
-        public decimal ProvisionRatePerc { get
+        public decimal ProvisionRatePerc
+        {
+            get
             {
-                return ProvisionRate *100;
+                return ProvisionRate * 100;
             }
             set
             {
-                ProvisionRate = value/100;
-            } }
+                ProvisionRate = value / 100;
+            }
+        }
         public decimal Provision { get; set; }
         public decimal Revenue { get; set; }
 
-        public Trader(string traderID, string name, decimal balance, decimal revenue, decimal provisionRate, decimal provision) 
+        public Trader(string traderID, string name, decimal balance, decimal revenue, decimal provisionRate, decimal provision)
         {
-            Name= name;
-            Balance = balance; 
+            Name = name;
+            Balance = balance;
             ProvisionRate = provisionRate;
             TraderID = traderID;
             Provision = provision;
-            Revenue= revenue;
+            Revenue = revenue;
         }
 
-        public static Trader FromJson(JsonObject data) {
+        public static Trader FromJson(JsonObject data)
+        {
             return new Trader(
                 data["id"]!.ToString(),
                 data["name"]!.ToString(),
@@ -46,7 +51,8 @@ namespace TroedelMarkt
             );
         }
 
-        public Trader UpdateFromJson(JsonObject data) {
+        public Trader UpdateFromJson(JsonObject data)
+        {
             TraderID = data["id"]!.ToString();
             Name = data["name"]!.ToString();
             ProvisionRate = decimal.Parse(data["rate"]!.ToString());
@@ -56,7 +62,8 @@ namespace TroedelMarkt
             return this;
         }
 
-        public JsonObject ToJson() {
+        public JsonObject ToJson()
+        {
             return new JsonObject() {
                 {"id", TraderID },
                 {"name", Name},

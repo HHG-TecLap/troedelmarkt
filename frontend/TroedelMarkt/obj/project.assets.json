@@ -8,27 +8,26 @@
     "net6.0-windows7.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Fisch37\\.nuget\\packages\\": {}
+    "C:\\Users\\felix\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "G:\\Programmieren\\C#\\TroedelMarkt\\TroedelMarkt.csproj",
+      "projectUniqueName": "C:\\Users\\felix\\OneDrive\\Documents\\Programmieren\\Troedelmarkt\\troedelmarkt\\frontend\\TroedelMarkt\\TroedelMarkt\\TroedelMarkt.csproj",
       "projectName": "TroedelMarkt",
-      "projectPath": "G:\\Programmieren\\C#\\TroedelMarkt\\TroedelMarkt.csproj",
-      "packagesPath": "C:\\Users\\Fisch37\\.nuget\\packages\\",
-      "outputPath": "G:\\Programmieren\\C#\\TroedelMarkt\\obj\\",
+      "projectPath": "C:\\Users\\felix\\OneDrive\\Documents\\Programmieren\\Troedelmarkt\\troedelmarkt\\frontend\\TroedelMarkt\\TroedelMarkt\\TroedelMarkt.csproj",
+      "packagesPath": "C:\\Users\\felix\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\felix\\OneDrive\\Documents\\Programmieren\\Troedelmarkt\\troedelmarkt\\frontend\\TroedelMarkt\\TroedelMarkt\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Fisch37\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\felix\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0-windows"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {}
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {}
       },
       "frameworks": {
         "net6.0-windows7.0": {

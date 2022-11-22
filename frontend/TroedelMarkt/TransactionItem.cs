@@ -6,13 +6,14 @@ namespace TroedelMarkt
     {
         public string Trader { get; set; }
         public decimal Value { get; set; }
-        public TransactionItem(string trader, decimal value) 
+        public TransactionItem(string trader, decimal value)
         {
             Trader = trader;
             Value = value;
         }
 
-        public JsonObject ToJson(){
+        public JsonObject ToJson()
+        {
             return new JsonObject(){
                 { "sellerId", Trader},
                 { "price", Value.ToString()}

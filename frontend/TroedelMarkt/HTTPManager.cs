@@ -136,7 +136,7 @@ namespace TroedelMarkt
                 }
             }
 
-            _authenticationKey = new AuthenticationHeaderValue(
+            _authenticationKey = AuthenticationHeaderValue.Parse(
                 await response.Content.ReadAsStringAsync()
             );
         }
@@ -145,19 +145,23 @@ namespace TroedelMarkt
         private async Task<JsonObject> CreateNewTraderRequestHandler(
             string traderID,
             string name,
-            decimal rate
+            decimal? rate
         )
         {
+            JsonObject requestBody = new JsonObject{
+              {"id", traderID},
+              {"name", name}
+            };
+            if (rate is not null)
+            {
+                requestBody["rate"] = rate.ToString();
+            }
             try
             {
                 return await RawPostRequest<JsonObject>(
                     "/seller",
                     typeof(JsonObject),
-                    new JsonObject {
-                        {"id", traderID},
-                        {"name", name },
-                        {"rate", rate }
-                    }
+                    requestBody
                 );
             }
             catch (HttpStatusCarrier e)
@@ -181,7 +185,7 @@ namespace TroedelMarkt
 		 *  UnauthorizedException: The client is not authenticated.
 		 *  DuplicateException: A trader with this trader.TraderID already exists.
 		*/
-        public async Task<Trader> CreateNewTrader(Trader trader)
+        public async Task<Trader> CreateNewTrader(string newTraderID, Trader trader)
         {
             return trader.UpdateFromJson(
                 await CreateNewTraderRequestHandler(
@@ -194,7 +198,7 @@ namespace TroedelMarkt
         public async Task<Trader> CreateNewTrader(
             string traderID,
             string name,
-            decimal rate
+            decimal? rate
         )
         {
             return Trader.FromJson(await CreateNewTraderRequestHandler(traderID, name, rate));

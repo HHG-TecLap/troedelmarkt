@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Policy;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,25 +27,34 @@ namespace TroedelMarkt
     /// </summary>
     public partial class MainWindow : Window
     {
-        public List<TransactionItem> Transactions { get; set; }
+        public List<TransactionItem> Transactions { get; set; } //Epty at programm start( still filled for debug)
+        public List<string> TraderIDs { get; set; } //needs to be filld with proper API data (currently silled for debug)
+
+        public HTTPManager hTTPManager { get; set; }
         public MainWindow()
         {
             InitializeComponent();
-            Transactions= new List<TransactionItem>();
+
+            Transactions = new List<TransactionItem>();
             DataContext = Transactions;
+            TraderIDs = new List<string>();
+            DataContext = TraderIDs;
             for ( int i = 0; i<10; i++ )
             {
                 Transactions.Add(new TransactionItem($"TraderNum{i}", i * 11m - i / 13m ));
             }
-            updateSumm();
-            LoginWindow lgin = new LoginWindow();
+
+            LoginWindow lgin = new LoginWindow(); //Login 
             var result = lgin.ShowDialog();
-            if ( result != true) 
+            if (result != true)
             {
                 System.Windows.Application.Current.Shutdown();
             }
+            hTTPManager = lgin.httpManager;
             
-            
+
+            updateTraderList();
+            updateSumm();
         }
 
         private void BtnDeleteElement_Click(object sender, RoutedEventArgs e)
@@ -61,8 +74,8 @@ namespace TroedelMarkt
                 {
                     Value = decimal.Parse(TBoxElementValue.Text);
                 }
-                catch (Exception) { }
-                Transactions.Add(new TransactionItem(TBoxTraderID.Text, 0m));
+                catch (Exception ex) { }
+                Transactions.Add(new TransactionItem(CBTraderID.Text, 0m));
             }
             else 
             { 
@@ -105,21 +118,74 @@ namespace TroedelMarkt
             updateSumm();
         }
 
-        private void BtnMakeTRansaction_Click(object sender, RoutedEventArgs e)
+        private async void BtnMakeTRansaction_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show("Sind Sie sicher!\nDie Transaktion kann nicht rückgängig gemacht werden.", "Transaktion durchführen", MessageBoxButton.OKCancel, MessageBoxImage.Asterisk, MessageBoxResult.Cancel);
             if (result is MessageBoxResult.OK)
             {
-                //API send request and validete / inform user when failed 
-                throw new System.NotImplementedException();
+                foreach (TransactionItem trans in Transactions)
+                {
+                    if (TraderIDs.Find(x => x == trans.Trader) == null)
+                    {
+                        MessageBox.Show("Einige Händler IDs sind nicht korrekt.\nBitte überprüfen sie die Eingabe", "Eingabe fehlerhaft", MessageBoxButton.OK, MessageBoxImage.Stop);
+                        return;
+                    }
+                }
+                try
+                {
+                    await hTTPManager.SellItems(Transactions);
+                    Transactions.Clear();
+                    updateTraderList();
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show($"Es ist ein fehler aughetreten\n{ex.Message}");
+                }
             }
         }
 
         private void BtnTraderView_Click(object sender, RoutedEventArgs e)
         {
-            Window1 wind = new Window1();
+            Window1 wind = new Window1(hTTPManager);
             wind.Owner= this;
             wind.Show();
+        }
+
+        private void BtnUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            updateTraderList();
+        }
+
+        public async void updateTraderList()
+        {
+            try
+            {
+                List<Trader> tdrs = new List<Trader>(await hTTPManager.GetAllTraders());
+                TraderIDs.Clear();
+                foreach (Trader tdr in tdrs)
+                {
+                    TraderIDs.Add(tdr.TraderID);
+                }
+                TraderIDs.Sort();
+                CBTraderID.Items.Refresh();
+            }
+            catch (Exception ex) { }
+        }
+    }
+    partial class TraderIDValidation : ValidationRule
+    {
+        public string pattern { get; set; }
+        public TraderIDValidation() { }
+
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
+        {
+            Regex alphaNum = new Regex(pattern);//
+            string input = value as string;
+            if (alphaNum.IsMatch(input))
+            {
+                return ValidationResult.ValidResult;
+            }
+            return new ValidationResult(false, "illegal input");
         }
     }
 }
