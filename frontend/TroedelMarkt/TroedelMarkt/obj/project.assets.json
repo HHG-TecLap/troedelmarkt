@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\felix\\source\\repos\\TroedelMarkt\\TroedelMarkt\\TroedelMarkt.csproj",
+      "projectUniqueName": "C:\\Users\\felix\\OneDrive\\Documents\\Programmieren\\Troedelmarkt\\troedelmarkt\\frontend\\TroedelMarkt\\TroedelMarkt\\TroedelMarkt.csproj",
       "projectName": "TroedelMarkt",
-      "projectPath": "C:\\Users\\felix\\source\\repos\\TroedelMarkt\\TroedelMarkt\\TroedelMarkt.csproj",
+      "projectPath": "C:\\Users\\felix\\OneDrive\\Documents\\Programmieren\\Troedelmarkt\\troedelmarkt\\frontend\\TroedelMarkt\\TroedelMarkt\\TroedelMarkt.csproj",
       "packagesPath": "C:\\Users\\felix\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\felix\\source\\repos\\TroedelMarkt\\TroedelMarkt\\obj\\",
+      "outputPath": "C:\\Users\\felix\\OneDrive\\Documents\\Programmieren\\Troedelmarkt\\troedelmarkt\\frontend\\TroedelMarkt\\TroedelMarkt\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\felix\\AppData\\Roaming\\NuGet\\NuGet.Config",

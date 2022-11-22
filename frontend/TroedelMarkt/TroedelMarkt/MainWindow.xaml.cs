@@ -118,7 +118,7 @@ namespace TroedelMarkt
             updateSumm();
         }
 
-        private void BtnMakeTRansaction_Click(object sender, RoutedEventArgs e)
+        private async void BtnMakeTRansaction_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show("Sind Sie sicher!\nDie Transaktion kann nicht rückgängig gemacht werden.", "Transaktion durchführen", MessageBoxButton.OKCancel, MessageBoxImage.Asterisk, MessageBoxResult.Cancel);
             if (result is MessageBoxResult.OK)
@@ -130,6 +130,17 @@ namespace TroedelMarkt
                         MessageBox.Show("Einige Händler IDs sind nicht korrekt.\nBitte überprüfen sie die Eingabe", "Eingabe fehlerhaft", MessageBoxButton.OK, MessageBoxImage.Stop);
                         return;
                     }
+                }
+                try
+                {
+                    await hTTPManager.SellItems(Transactions);
+                    Transactions.Clear();
+                    updateTraderList();
+                    updateSumm();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Es ist ein Fehler aufgetreten\n{ex.Message}");
                 }
             }
         }
@@ -144,6 +155,7 @@ namespace TroedelMarkt
         private void BtnUpdate_Click(object sender, RoutedEventArgs e)
         {
             updateTraderList();
+            updateSumm();
         }
 
         public async void updateTraderList()
