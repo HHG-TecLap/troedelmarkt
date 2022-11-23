@@ -39,10 +39,7 @@ namespace TroedelMarkt
             DataContext = Transactions;
             TraderIDs = new List<string>();
             DataContext = TraderIDs;
-            for ( int i = 0; i<10; i++ )
-            {
-                Transactions.Add(new TransactionItem($"TraderNum{i}", i * 11m - i / 13m ));
-            }
+
 
             LoginWindow lgin = new LoginWindow(); //Login 
             var result = lgin.ShowDialog();
@@ -51,16 +48,22 @@ namespace TroedelMarkt
                 System.Windows.Application.Current.Shutdown();
             }
             hTTPManager = lgin.httpManager;
-            
 
+            Transactions.Add(new TransactionItem("0", 0m));
             updateTraderList();
             updateSumm();
+            LbTransactions.SelectedIndex = 0;
         }
 
         private void BtnDeleteElement_Click(object sender, RoutedEventArgs e)
         {
-            if(LbTransactions.SelectedIndex != -1)
+            if(LbTransactions.SelectedIndex != -1 && LbTransactions.SelectedIndex < Transactions.Count)
                 Transactions.RemoveAt(LbTransactions.SelectedIndex);
+            if(Transactions.Count < 1)
+            {
+                Transactions.Add(new TransactionItem("0", 0m));
+                LbTransactions.SelectedIndex = 0;
+            }
             LbTransactions.Items.Refresh();
             updateSumm();
         }
@@ -80,10 +83,12 @@ namespace TroedelMarkt
             else 
             { 
                 Transactions.Add(new TransactionItem(null, 0m)); 
+                LbTransactions.SelectedIndex = Transactions.Count;
             }
             LbTransactions.Items.Refresh();
             updateSumm();
             LbTransactions.SelectedIndex = Transactions.Count - 1;
+            CBTraderID.Focus();
         }
 
         private void BtnExitTransaction_Click(object sender, RoutedEventArgs e)
@@ -92,6 +97,8 @@ namespace TroedelMarkt
             if (result is MessageBoxResult.OK) 
             {
                 Transactions.Clear();
+                Transactions.Add(new TransactionItem("0", 0m));
+                LbTransactions.SelectedIndex = 0;
                 LbTransactions.Items.Refresh();
                 updateSumm();
             }
@@ -114,7 +121,7 @@ namespace TroedelMarkt
 
         private void TbUpdateBinding(object sender, TextChangedEventArgs e)
         {
-            (sender as TextBox).GetBindingExpression(TextBox.TextProperty).UpdateSource();
+            //(sender as TextBox).GetBindingExpression(TextBox.TextProperty).UpdateSource();
             updateSumm();
         }
 
@@ -135,6 +142,9 @@ namespace TroedelMarkt
                 {
                     await hTTPManager.SellItems(Transactions);
                     Transactions.Clear();
+                    Transactions.Add(new TransactionItem("0", 0m));
+                    LbTransactions.SelectedIndex = 0;
+                    LbTransactions.Items.Refresh();
                     updateTraderList();
                     updateSumm();
                 }
@@ -173,21 +183,61 @@ namespace TroedelMarkt
             }
             catch (Exception ex) { }
         }
+
+        private void CB_keyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key== Key.Enter)
+            {
+                TBoxElementValue.Focus();
+            }
+        }
+
+        private void TBValue_keyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                BtnAddElement.Focus();
+            }
+        }
+
+        private void TbValue_gotFocus(object sender, RoutedEventArgs e)
+        {
+            TBoxElementValue.SelectAll();
+        }
     }
     partial class TraderIDValidation : ValidationRule
     {
         public string pattern { get; set; }
+        //public bool checkIDExists { get; set; }
+        //public TraderIDValidationWrapper Wrapper { get; set; }
+        
         public TraderIDValidation() { }
 
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            Regex alphaNum = new Regex(pattern);//
+            Regex alphaNum = new Regex(pattern);
             string input = value as string;
             if (alphaNum.IsMatch(input))
             {
+                /*if(checkIDExists)
+                {
+                    if(Wrapper.TraderIDs.Find(t => t == input) == null)
+                    {
+                        return new ValidationResult(false, "Trader ID not found");
+                    }
+                }*/
                 return ValidationResult.ValidResult;
             }
             return new ValidationResult(false, "illegal input");
         }
     }
+    /*public class TraderIDValidationWrapper : DependencyObject
+    {
+        public DependencyProperty TraderIDsProperty = DependencyProperty.Register("TraderIDs", typeof(List<string>), typeof(TraderIDValidationWrapper));
+        public List<string> TraderIDs
+        {
+            get { return (List<string>)GetValue(TraderIDsProperty); }
+            set { SetValue(TraderIDsProperty, value);}
+        }
+    }*/
 }

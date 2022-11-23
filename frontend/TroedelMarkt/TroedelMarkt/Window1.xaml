@@ -58,6 +58,7 @@
                 <TextBlock x:Name="TBlockDebug" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="For debugging"/>
                 <Button x:Name="BtnUpdateData" Content="Daten aktualisieren" Margin="10,10,10,10" VerticalAlignment="Center" Click="BtnUpdateData_Click" />
             </StackPanel>
+            <Button x:Name="BtnUpdateTraders" Grid.Column="1" Content="Makierte Händler aktualisiern" Margin="10,10,10,10" Grid.Row="1" VerticalAlignment="Bottom" Click="BtnUpdateTraders_Click" IsEnabled="False"/>
         </Grid>
     </Grid>
 </Window>

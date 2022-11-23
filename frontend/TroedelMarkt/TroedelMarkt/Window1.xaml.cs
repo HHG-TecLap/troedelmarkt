@@ -61,7 +61,7 @@ namespace TroedelMarkt
             updateData();
         }
 
-        private void BtnDelTdr_Click(object sender, RoutedEventArgs e)
+        private async void BtnDelTdr_Click(object sender, RoutedEventArgs e)
         {
             if (DGTrader.SelectedIndex != -1)
             { //API update database
@@ -72,11 +72,21 @@ namespace TroedelMarkt
                     foreach (Trader tdr in DGTrader.SelectedItems) {
                         try
                         {
-                            hTTPManager.DeleteTrader(tdr.TraderID);
+                            await hTTPManager.DeleteTrader(tdr.TraderID);
                         }
-                        catch { }
+                        catch (Exception ex) 
+                        {
+                            if (ex is DeletionOrderException)
+                            {
+                                result = MessageBox.Show($"Der Händler {tdr.TraderID} kann nicht geslöscht werden, da seine Bilanz nicht 0 ist.", "Löschen fehlgeschlagen", MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                                if( result == MessageBoxResult.Cancel) 
+                                {
+                                    return;
+                                }
+                            }
+                            
+                        }
                     }
-                    DGTrader.Items.Refresh();
                 }
             }
             updateData();
@@ -91,30 +101,12 @@ namespace TroedelMarkt
 
         /// <summary>
         /// Sends canges to API and updates local data.
-        /// <seealso cref="updateData"/>
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private async void DGCellEditEnd(object sender, DataGridCellEditEndingEventArgs e)
         {
-
-            TBlockDebug.Text = $"edditEnded{(e.EditingElement as TextBox).Text}"; 
-            Trader tdr = (sender as DataGrid).SelectedItem as Trader;
-            /*if (e.Column.Header == "Provisionsrate in %")
-            {
-                tdr.ProvisionRatePerc = decimal.Parse((e.EditingElement as TextBox).Text);
-            }
-            else
-            {
-                tdr.Name = (e.EditingElement as TextBox).Text;
-            }*/
-            
-            try
-            {
-                await hTTPManager.UpdateTrader(tdr);
-            }
-            catch { }
-            updateData();
+            BtnUpdateTraders.IsEnabled = true;
         }
 
         private async void ExportCSV_Click(object sender, RoutedEventArgs e)
@@ -154,11 +146,10 @@ namespace TroedelMarkt
             {
                 Traders.Clear();
                 Traders.AddRange(await hTTPManager.GetAllTraders());
-                
+                DGTrader.Items.Refresh();
+                updateStatistics();
             }
-            catch { TBlockDebug.Text = "Updating data failes"; }
-            DGTrader.Items.Refresh();
-            updateStatistics();
+            catch { TBlockDebug.Text = "Updating data failed"; }
         }
 
         /// <summary>
@@ -177,5 +168,32 @@ namespace TroedelMarkt
             TBlockProvSumm.Text = $"Provisions Summe: {provSumm.ToString("C")}";
         }
 
+        private async void BtnUpdateTraders_Click(object sender, RoutedEventArgs e)
+        {
+            if (DGTrader.SelectedIndex != -1)
+            { //API update database
+                var result = MessageBox.Show($"Es werden {DGTrader.SelectedItems.Count} Händler aktualisiert.",
+                    "Händler löschen", MessageBoxButton.OKCancel, MessageBoxImage.Information);
+                if (result == MessageBoxResult.OK)
+                {
+                    foreach (Trader tdr in DGTrader.SelectedItems)
+                    {
+                        try
+                        {
+                            await hTTPManager.UpdateTrader(tdr);
+                        }
+                        catch (Exception ex)
+                        {
+                            
+                        }
+                    }
+                    DGTrader.Items.Refresh();
+                }
+            }
+            updateData();
+            DGTrader.Items.Refresh();
+            updateStatistics();
+            BtnUpdateTraders.IsEnabled = false;
+        }
     }
 }

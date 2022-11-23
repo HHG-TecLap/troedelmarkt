@@ -52,7 +52,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock  TextWrapping="Wrap" Text="Händler ID" Margin="10,10,10,10"/>
                 <TextBlock Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="Betrag"/>
-                <ComboBox x:Name="CBTraderID" IsEditable="True"  Margin="10,10,10,10"  Grid.Column="1"  ItemsSource="{Binding TraderIDs, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}">
+                <ComboBox x:Name="CBTraderID" IsEditable="True"  Margin="10,10,10,10"  Grid.Column="1"  ItemsSource="{Binding TraderIDs, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" KeyDown="CB_keyDown">
                     <ComboBox.Text>
                         <Binding Path="SelectedItem.Trader" ElementName="LbTransactions" Mode="TwoWay">
                             <Binding.ValidationRules>
@@ -61,7 +61,7 @@
                         </Binding>
                     </ComboBox.Text>
                 </ComboBox>
-                <TextBox x:Name="TBoxElementValue" Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="{Binding SelectedItem.Value, StringFormat=C, ConverterCulture=de-De, ElementName=LbTransactions, Mode=TwoWay}" TextChanged="TbUpdateBinding"/>
+                <TextBox x:Name="TBoxElementValue" Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="{Binding SelectedItem.Value, StringFormat=C, ConverterCulture=de-De, ElementName=LbTransactions, Mode=TwoWay}" TextChanged="TbUpdateBinding" KeyDown="TBValue_keyDown" GotFocus="TbValue_gotFocus"/>
                 <Button x:Name="BtnAddElement" Content="Artikel hinzufügen" Margin="10,10,10,10" Click="BtnAddElement_Click"  Grid.Row="2"/>
                 <Button x:Name="BtnDeleteElement" Content="Artikel löschen" Margin="10,10,10,10" Click="BtnDeleteElement_Click" Grid.Column="1" Grid.Row="2"/>
                 <Button x:Name="BtnMakeTRansaction" Content="Transaktion abschließen" Width="NaN" Margin="10,10,10,10" Grid.Row="3" Click="BtnMakeTRansaction_Click" />
