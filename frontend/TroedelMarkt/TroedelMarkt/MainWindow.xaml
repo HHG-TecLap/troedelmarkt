@@ -52,7 +52,7 @@
                 </Grid.ColumnDefinitions>
                 <TextBlock  TextWrapping="Wrap" Text="Händler ID" Margin="10,10,10,10"/>
                 <TextBlock Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="Betrag"/>
-                <ComboBox x:Name="CBTraderID" IsEditable="True"  Margin="10,10,10,10"  Grid.Column="1"  ItemsSource="{Binding TraderIDs, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" KeyDown="CB_keyDown">
+                <ComboBox x:Name="CBTraderID" IsEditable="True"  Margin="10,10,10,10"  Grid.Column="1"  ItemsSource="{Binding TraderIDs, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" KeyDown="CB_keyDown" GotFocus="CBTraderID_gotFocus">
                     <ComboBox.Text>
                         <Binding Path="SelectedItem.Trader" ElementName="LbTransactions" Mode="TwoWay">
                             <Binding.ValidationRules>

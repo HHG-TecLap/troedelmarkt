@@ -31,6 +31,7 @@ namespace TroedelMarkt
         public List<string> TraderIDs { get; set; } //needs to be filld with proper API data (currently silled for debug)
 
         public HTTPManager hTTPManager { get; set; }
+        private Window1 wind1;
         public MainWindow()
         {
             InitializeComponent();
@@ -49,10 +50,12 @@ namespace TroedelMarkt
             }
             hTTPManager = lgin.httpManager;
 
-            Transactions.Add(new TransactionItem("0", 0m));
+            Transactions.Add(new TransactionItem("", 0m));
             updateTraderList();
             updateSumm();
             LbTransactions.SelectedIndex = 0;
+
+            wind1 = null;
         }
 
         private void BtnDeleteElement_Click(object sender, RoutedEventArgs e)
@@ -61,7 +64,7 @@ namespace TroedelMarkt
                 Transactions.RemoveAt(LbTransactions.SelectedIndex);
             if(Transactions.Count < 1)
             {
-                Transactions.Add(new TransactionItem("0", 0m));
+                Transactions.Add(new TransactionItem("", 0m));
                 LbTransactions.SelectedIndex = 0;
             }
             LbTransactions.Items.Refresh();
@@ -82,7 +85,7 @@ namespace TroedelMarkt
             }
             else 
             { 
-                Transactions.Add(new TransactionItem(null, 0m)); 
+                Transactions.Add(new TransactionItem("", 0m)); 
                 LbTransactions.SelectedIndex = Transactions.Count;
             }
             LbTransactions.Items.Refresh();
@@ -97,7 +100,7 @@ namespace TroedelMarkt
             if (result is MessageBoxResult.OK) 
             {
                 Transactions.Clear();
-                Transactions.Add(new TransactionItem("0", 0m));
+                Transactions.Add(new TransactionItem("", 0m));
                 LbTransactions.SelectedIndex = 0;
                 LbTransactions.Items.Refresh();
                 updateSumm();
@@ -142,11 +145,12 @@ namespace TroedelMarkt
                 {
                     await hTTPManager.SellItems(Transactions);
                     Transactions.Clear();
-                    Transactions.Add(new TransactionItem("0", 0m));
+                    Transactions.Add(new TransactionItem("", 0m));
                     LbTransactions.SelectedIndex = 0;
                     LbTransactions.Items.Refresh();
                     updateTraderList();
                     updateSumm();
+                    wind1.updateData();
                 }
                 catch (Exception ex)
                 {
@@ -157,9 +161,23 @@ namespace TroedelMarkt
 
         private void BtnTraderView_Click(object sender, RoutedEventArgs e)
         {
-            Window1 wind = new Window1(hTTPManager);
-            wind.Owner= this;
-            wind.Show();
+            if(wind1 == null)
+            {
+                wind1 = new Window1(hTTPManager);
+                wind1.Owner = this;
+                wind1.Show();
+            }
+            else if (wind1.active == false)
+            {
+                wind1 = new Window1(hTTPManager);
+                wind1.Owner = this;
+                wind1.Show();
+            }
+            else
+            {
+                wind1.WindowState= WindowState.Normal;
+            }
+            
         }
 
         private void BtnUpdate_Click(object sender, RoutedEventArgs e)
@@ -203,6 +221,11 @@ namespace TroedelMarkt
         private void TbValue_gotFocus(object sender, RoutedEventArgs e)
         {
             TBoxElementValue.SelectAll();
+        }
+
+        private void CBTraderID_gotFocus(object sender, RoutedEventArgs e)
+        {
+            updateTraderList();
         }
     }
     partial class TraderIDValidation : ValidationRule

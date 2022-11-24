@@ -25,6 +25,8 @@ namespace TroedelMarkt
         public List<Trader> Traders { get; set; } //Traders get pullt from API
         public string newTraderID { get; set; }
         public HTTPManager hTTPManager { get; set; }
+
+        public bool active { get; set; }
         
         public Window1( HTTPManager httmMan)
         {
@@ -35,7 +37,7 @@ namespace TroedelMarkt
             DataContext = newTraderID;
             hTTPManager = httmMan;
             updateData();
-            
+            active= true;
 
         }
 
@@ -140,7 +142,7 @@ namespace TroedelMarkt
         /// Gets data from API  and updates Traders and statistics.
         /// <seealso cref="updateStatistics"/>
         /// </summary>
-        private async void updateData()
+        public async void updateData()
         {
             try
             {
@@ -194,6 +196,11 @@ namespace TroedelMarkt
             DGTrader.Items.Refresh();
             updateStatistics();
             BtnUpdateTraders.IsEnabled = false;
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            active = false;
         }
     }
 }
