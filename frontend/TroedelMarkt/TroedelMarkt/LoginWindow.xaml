@@ -42,7 +42,7 @@
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
             <Label Content="Passwort" Margin="10,10,10,10" HorizontalContentAlignment="Center"/>
-            <PasswordBox x:Name="PBoxPassword" Margin="10,10,10,10" Password="ChangeMe!"/>
+            <PasswordBox x:Name="PBoxPassword" Margin="10,10,10,10" Password=""/>
         </StackPanel>
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
             <Button x:Name="TbnLogin" Content="Anmelden" Margin="10,10,10,10" Click="TbnLogin_Click" IsDefault="True"/>

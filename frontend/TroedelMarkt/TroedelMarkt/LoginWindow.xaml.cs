@@ -28,7 +28,7 @@ namespace TroedelMarkt
         public LoginWindow()
         {
             InitializeComponent();
-            Adress = "127.0.0.1";
+            Adress = "";
             Port = "3080";
             DataContext = Adress;
             DataContext = Port;
