@@ -148,7 +148,6 @@ namespace TroedelMarkt
                     Transactions.Add(new TransactionItem("", 0m));
                     LbTransactions.SelectedIndex = 0;
                     LbTransactions.Items.Refresh();
-                    updateTraderList();
                     updateSumm();
                     wind1.updateData();
                 }
