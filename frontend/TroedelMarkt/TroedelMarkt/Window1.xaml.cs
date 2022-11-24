@@ -106,7 +106,7 @@ namespace TroedelMarkt
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void DGCellEditEnd(object sender, DataGridCellEditEndingEventArgs e)
+        private void DGCellEditEnd(object sender, DataGridCellEditEndingEventArgs e)
         {
             BtnUpdateTraders.IsEnabled = true;
         }
@@ -128,7 +128,10 @@ namespace TroedelMarkt
                     stream.CopyTo(file);
                     file.Close();
                 }
-                catch { }
+                catch (Exception ex)
+                { 
+                    MessageBox.Show($"Es ist ein Fehler aufgetreten.\n{ex.Message}","Daten exportieren");
+                }
             }
         }
 

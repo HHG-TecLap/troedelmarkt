@@ -154,7 +154,7 @@ namespace TroedelMarkt
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Es ist ein Fehler aufgetreten\n{ex.Message}");
+                    MessageBox.Show($"Es ist ein Fehler aufgetreten\n{ex.Message}","Bei Transaktion durchführen");
                 }
             }
         }
