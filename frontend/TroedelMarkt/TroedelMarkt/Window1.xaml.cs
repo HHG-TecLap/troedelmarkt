@@ -53,7 +53,7 @@ namespace TroedelMarkt
                         await hTTPManager.CreateNewTrader(newTraderID, "",null);
                         TBoxTraderID.Text = "";
                     }
-                    catch (Exception ex){ TBlockDebug.Text = $"Adding Failed: {ex}"; }
+                    catch (Exception ex){ MessageBox.Show($"Es ist ein fehler aufgetreten.\n{ex.Message}","Händler hinzufügen",MessageBoxButton.OK,MessageBoxImage.Warning); }
                 }
                 else
                 {
@@ -109,6 +109,7 @@ namespace TroedelMarkt
         private void DGCellEditEnd(object sender, DataGridCellEditEndingEventArgs e)
         {
             BtnUpdateTraders.IsEnabled = true;
+            e.Row.Background = Brushes.Chartreuse;
         }
 
         private async void ExportCSV_Click(object sender, RoutedEventArgs e)
@@ -130,7 +131,7 @@ namespace TroedelMarkt
                 }
                 catch (Exception ex)
                 { 
-                    MessageBox.Show($"Es ist ein Fehler aufgetreten.\n{ex.Message}","Daten exportieren");
+                    MessageBox.Show($"Es ist ein Fehler aufgetreten.\n{ex.Message}","Daten exportieren",MessageBoxButton.OK,MessageBoxImage.Information);
                 }
             }
         }
@@ -138,7 +139,6 @@ namespace TroedelMarkt
         private void BtnUpdateData_Click(object sender, RoutedEventArgs e)
         {
             updateData();
-            TBlockDebug.Text = $"Upd: {Traders.Count.ToString()}";
         }
 
         /// <summary>
@@ -153,8 +153,9 @@ namespace TroedelMarkt
                 Traders.AddRange(await hTTPManager.GetAllTraders());
                 DGTrader.Items.Refresh();
                 updateStatistics();
+                BtnUpdateTraders.IsEnabled = false;
             }
-            catch { TBlockDebug.Text = "Updating data failed"; }
+            catch (Exception ex) { MessageBox.Show($"Es ist eiin Fehler aufgetreten\n{ex.Message}","Händler aktualisieren",MessageBoxButton.OK,MessageBoxImage.Information); }
         }
 
         /// <summary>
