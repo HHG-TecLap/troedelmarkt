@@ -220,7 +220,18 @@ namespace TroedelMarkt
 		*/
         public async Task<Trader[]> GetAllTraders()
         {
-            JsonArray responseObject = await RawGetRequest<JsonArray>("/sellers");
+            JsonArray responseObject;
+            try
+            {
+                responseObject = await RawGetRequest<JsonArray>("/sellers");
+            } catch (HttpStatusCarrier e)
+            {
+                switch (e.code)
+                {
+                    default:
+                        throw new ClientException($"Server responded with unexpected status code {e.code}", e);
+                }
+            }
 
             Trader[] traders = new Trader[responseObject.Count];
             int i = 0;
