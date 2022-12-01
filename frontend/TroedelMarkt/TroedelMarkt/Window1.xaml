@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TroedelMarkt"
         mc:Ignorable="d"
-        Title="Trödelmarkt Manager Händleransicht" Height="450" Width="800" Closing="Window_Closing">
+        Title="Trödelmarkt Manager Händleransicht" Height="450" Width="800" MinWidth="650" MinHeight="360" Closing="Window_Closing">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -22,7 +22,7 @@
                 <DataGridTextColumn Header="Bilanz" Binding="{Binding Balance, StringFormat=C, ConverterCulture=de-De, Mode=OneWay}"/>
                 <DataGridTextColumn Header="Gewinn" Binding="{Binding Revenue, StringFormat=C ,ConverterCulture=de-De, Mode=OneWay}"/>
                 <DataGridTextColumn Header="Provisionsrate in %" Binding="{Binding ProvisionRatePerc, Mode=TwoWay, StringFormat=\{0:N\}}"/>
-                <DataGridTextColumn Header="Startgebühr" Binding="{Binding startingFee ,Mode=TwoWay, StringFormat=C, ConverterCulture=de-De}"/>
+                <DataGridTextColumn Header="Startgebühr" Binding="{Binding StartingFee ,Mode=TwoWay, StringFormat=C, ConverterCulture=de-De}"/>
                 <DataGridTextColumn Header="Provision" Binding="{Binding Provision, StringFormat=C, ConverterCulture=de-De, Mode=OneWay}"/>
             </DataGrid.Columns>
         </DataGrid>

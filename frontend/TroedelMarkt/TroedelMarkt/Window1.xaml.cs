@@ -155,7 +155,7 @@ namespace TroedelMarkt
                 updateStatistics();
                 BtnUpdateTraders.IsEnabled = false;
             }
-            catch (Exception ex) { MessageBox.Show($"Es ist eiin Fehler aufgetreten\n{ex.Message}","Händler aktualisieren",MessageBoxButton.OK,MessageBoxImage.Information); }
+            catch (Exception ex) { MessageBox.Show($"Es ist ein Fehler aufgetreten\n{ex.Message}","Händler aktualisieren",MessageBoxButton.OK,MessageBoxImage.Information); }
         }
 
         /// <summary>
