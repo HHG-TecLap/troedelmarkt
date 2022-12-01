@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\felix\OneDrive\Documents\Programmieren\Troedelmarkt\troedelmarkt\frontend\TroedelMarkt\TroedelMarkt\obj\Debug\net6.0-windows\
-TroedelMarkt
+C:\Users\Techlap\Desktop\Trödelmarkt\frontend\TroedelMarkt\TroedelMarkt\obj\Debug\net6.0-windows\
+TroedelMarkt_cwiwzq2a_wpftmp
 none
 false
-TRACE;DEBUG;NET;NET6_0;NETCOREAPP
-C:\Users\felix\OneDrive\Documents\Programmieren\Troedelmarkt\troedelmarkt\frontend\TroedelMarkt\TroedelMarkt\App.xaml
+TRACE;RELEASE;NET;NET6_0;NETCOREAPP
+C:\Users\Techlap\Desktop\Trödelmarkt\frontend\TroedelMarkt\TroedelMarkt\App.xaml
 3317095513
 
-8-1429609958
-194-2004305220
+13-77110616
+388286356856
 LoginWindow.xaml;MainWindow.xaml;Window1.xaml;
 
-False
+True
 

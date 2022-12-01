@@ -10,6 +10,7 @@ namespace TroedelMarkt
         public string Name { get; set; }
         public decimal Balance { get; set; }
         public decimal ProvisionRate { get; set; }
+        public decimal StartingFee { get; set; }
         public decimal ProvisionRatePerc
         {
             get
@@ -24,7 +25,7 @@ namespace TroedelMarkt
         public decimal Provision { get; set; }
         public decimal Revenue { get; set; }
 
-        public Trader(string traderID, string name, decimal balance, decimal revenue, decimal provisionRate, decimal provision)
+        public Trader(string traderID, string name, decimal balance, decimal revenue, decimal provisionRate, decimal startingFee, decimal provision)
         {
             Name = name;
             Balance = balance;
@@ -32,6 +33,7 @@ namespace TroedelMarkt
             TraderID = traderID;
             Provision = provision;
             Revenue = revenue;
+            StartingFee= startingFee;
         }
 
         public static Trader FromJson(JsonObject data)
@@ -39,10 +41,11 @@ namespace TroedelMarkt
             return new Trader(
                 data["id"]!.ToString(),
                 data["name"]!.ToString(),
-                decimal.Parse(data["balance"]!.ToString(),InvariantCulture),
-                decimal.Parse(data["revenue"]!.ToString(),InvariantCulture),
-                decimal.Parse(data["rate"]!.ToString(),InvariantCulture),
-                decimal.Parse(data["provision"]!.ToString(),InvariantCulture)
+                decimal.Parse(data["balance"]!.ToString(), InvariantCulture),
+                decimal.Parse(data["revenue"]!.ToString(), InvariantCulture),
+                decimal.Parse(data["rate"]!.ToString(), InvariantCulture),
+                decimal.Parse(data["starting_fee"]!.ToString(), InvariantCulture),
+                decimal.Parse(data["provision"]!.ToString(), InvariantCulture)
             );
         }
 
@@ -51,6 +54,7 @@ namespace TroedelMarkt
             TraderID = data["id"]!.ToString();
             Name = data["name"]!.ToString();
             ProvisionRate = decimal.Parse(data["rate"]!.ToString(),InvariantCulture);
+            StartingFee = decimal.Parse(data["starting_fee"]!.ToString(), InvariantCulture),
             Balance = decimal.Parse(data["balance"]!.ToString(),InvariantCulture);
             Revenue = decimal.Parse(data["revenue"]!.ToString(),InvariantCulture);
             Provision = decimal.Parse(data["provision"]!.ToString(),InvariantCulture);
@@ -63,6 +67,7 @@ namespace TroedelMarkt
                 {"id", TraderID },
                 {"name", Name},
                 {"rate", ProvisionRate.ToString(InvariantCulture)},
+                {"starting_fee", StartingFee.ToString(InvariantCulture) }
                 // balance, revenue, and provision are not passed to the server
             };
         }

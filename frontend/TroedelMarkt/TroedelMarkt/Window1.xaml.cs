@@ -50,7 +50,7 @@ namespace TroedelMarkt
                 {
                     try 
                     {
-                        await hTTPManager.CreateNewTrader(newTraderID, "",null);
+                        await hTTPManager.CreateNewTrader(newTraderID, "",null,null);
                         TBoxTraderID.Text = "";
                     }
                     catch (Exception ex){ MessageBox.Show($"Es ist ein fehler aufgetreten.\n{ex.Message}","Händler hinzufügen",MessageBoxButton.OK,MessageBoxImage.Warning); }

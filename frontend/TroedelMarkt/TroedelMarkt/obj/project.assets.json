@@ -8,26 +8,32 @@
     "net6.0-windows7.0": []
   },
   "packageFolders": {
-    "C:\\Users\\felix\\.nuget\\packages\\": {}
+    "C:\\Users\\Techlap\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\felix\\OneDrive\\Documents\\Programmieren\\Troedelmarkt\\troedelmarkt\\frontend\\TroedelMarkt\\TroedelMarkt\\TroedelMarkt.csproj",
+      "projectUniqueName": "C:\\Users\\Techlap\\Desktop\\Trödelmarkt\\frontend\\TroedelMarkt\\TroedelMarkt\\TroedelMarkt.csproj",
       "projectName": "TroedelMarkt",
-      "projectPath": "C:\\Users\\felix\\OneDrive\\Documents\\Programmieren\\Troedelmarkt\\troedelmarkt\\frontend\\TroedelMarkt\\TroedelMarkt\\TroedelMarkt.csproj",
-      "packagesPath": "C:\\Users\\felix\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\felix\\OneDrive\\Documents\\Programmieren\\Troedelmarkt\\troedelmarkt\\frontend\\TroedelMarkt\\TroedelMarkt\\obj\\",
+      "projectPath": "C:\\Users\\Techlap\\Desktop\\Trödelmarkt\\frontend\\TroedelMarkt\\TroedelMarkt\\TroedelMarkt.csproj",
+      "packagesPath": "C:\\Users\\Techlap\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Techlap\\Desktop\\Trödelmarkt\\frontend\\TroedelMarkt\\TroedelMarkt\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\felix\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Techlap\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net6.0-windows"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {}
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0-windows7.0": {
