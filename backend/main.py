@@ -174,7 +174,7 @@ def ep_sell(
             enumerate(items)
         ))[0]
         error_message.setdefault(str(relevant_index),([],[]))
-        error_message[relevant_index][0].append("sellerId")
+        error_message[str(relevant_index)][0].append("sellerId")
     
     if len(error_message) > 0:
         return Response(error_message,400)
