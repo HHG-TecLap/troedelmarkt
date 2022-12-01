@@ -22,6 +22,7 @@
                 <DataGridTextColumn Header="Bilanz" Binding="{Binding Balance, StringFormat=C, ConverterCulture=de-De, Mode=OneWay}"/>
                 <DataGridTextColumn Header="Gewinn" Binding="{Binding Revenue, StringFormat=C ,ConverterCulture=de-De, Mode=OneWay}"/>
                 <DataGridTextColumn Header="Provisionsrate in %" Binding="{Binding ProvisionRatePerc, Mode=TwoWay, StringFormat=\{0:N\}}"/>
+                <DataGridTextColumn Header="Startgebühr" Binding="{Binding startingFee ,Mode=TwoWay, StringFormat=C, ConverterCulture=de-De}"/>
                 <DataGridTextColumn Header="Provision" Binding="{Binding Provision, StringFormat=C, ConverterCulture=de-De, Mode=OneWay}"/>
             </DataGrid.Columns>
         </DataGrid>
