@@ -54,7 +54,7 @@ namespace TroedelMarkt
             TraderID = data["id"]!.ToString();
             Name = data["name"]!.ToString();
             ProvisionRate = decimal.Parse(data["rate"]!.ToString(),InvariantCulture);
-            StartingFee = decimal.Parse(data["starting_fee"]!.ToString(), InvariantCulture),
+            StartingFee = decimal.Parse(data["starting_fee"]!.ToString(), InvariantCulture);
             Balance = decimal.Parse(data["balance"]!.ToString(),InvariantCulture);
             Revenue = decimal.Parse(data["revenue"]!.ToString(),InvariantCulture);
             Provision = decimal.Parse(data["provision"]!.ToString(),InvariantCulture);
