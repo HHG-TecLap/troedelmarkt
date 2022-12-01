@@ -21,6 +21,7 @@ API
         id: string,
         name: string,
         rate: string,
+        starting_fee: string,
         balance?: string
         revenue?: string 
         provision?: string 
@@ -38,6 +39,7 @@ Frontend (C#)
     + Balance: decimal
     - _ProvisionRate: decimal
     + Provision: decimal
+    + StartingFee: decimal
 
 + Property ProvisionRate: decimal (_ProvisionRate~100)
 
@@ -49,7 +51,8 @@ API
 
     {
         name?: string,
-        rate?: string
+        rate?: string,
+        starting_fee?: string
         // Any of these may be missing, in which case they are not changed
     }
 

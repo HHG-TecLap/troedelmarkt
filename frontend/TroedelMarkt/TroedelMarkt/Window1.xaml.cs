@@ -50,7 +50,7 @@ namespace TroedelMarkt
                 {
                     try 
                     {
-                        await hTTPManager.CreateNewTrader(newTraderID, "",null);
+                        await hTTPManager.CreateNewTrader(newTraderID, "",null,null);
                         TBoxTraderID.Text = "";
                     }
                     catch (Exception ex){ MessageBox.Show($"Es ist ein fehler aufgetreten.\n{ex.Message}","Händler hinzufügen",MessageBoxButton.OK,MessageBoxImage.Warning); }
@@ -155,7 +155,7 @@ namespace TroedelMarkt
                 updateStatistics();
                 BtnUpdateTraders.IsEnabled = false;
             }
-            catch (Exception ex) { MessageBox.Show($"Es ist eiin Fehler aufgetreten\n{ex.Message}","Händler aktualisieren",MessageBoxButton.OK,MessageBoxImage.Information); }
+            catch (Exception ex) { MessageBox.Show($"Es ist ein Fehler aufgetreten\n{ex.Message}","Händler aktualisieren",MessageBoxButton.OK,MessageBoxImage.Information); }
         }
 
         /// <summary>

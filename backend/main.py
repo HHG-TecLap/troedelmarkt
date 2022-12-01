@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, Response, Body, Request, Security, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.security.api_key import APIKeyBase, APIKey, APIKeyIn
 from .database import session_factory, Base, engine
 from .schemas import *
@@ -13,6 +13,7 @@ from csv import writer as csv_writer
 from hmac import compare_digest
 from .config_reader import CONFIG
 from .transaction_logger import TransactionLogger
+from .calculations import *
 import jwt
 from time import time as timestamp
 from typing import Literal
@@ -173,10 +174,10 @@ def ep_sell(
             enumerate(items)
         ))[0]
         error_message.setdefault(str(relevant_index),([],[]))
-        error_message[relevant_index][0].append("sellerId")
+        error_message[str(relevant_index)][0].append("sellerId")
     
     if len(error_message) > 0:
-        return Response(error_message,400)
+        return JSONResponse(error_message,400)
     
     relevant_sellers: set[Seller] = set()
     for item in items:
@@ -206,17 +207,19 @@ def ep_exportcsv(
     sellers = crud.get_all_sellers(session)
     io = StringIO()
     writer = csv_writer(io)
-    writer.writerow(("Trader ID","Name","Sum of all Sales","Provision Rate","Total Provision","Trader earnings"))
+    writer.writerow(("Trader ID","Name","Sum of all Sales","Provision Rate","Total Provision","Trader earnings", "Starting Fee"))
     for s in sellers:
         balance = Decimal(s.balance)
         rate = Decimal(s.rate)
+        starting_fee = Decimal(s.starting_fee)
         writer.writerow((
             s.id,
             s.name,
             balance,
             rate,
-            balance*rate,
-            balance*(1-rate)
+            calculate_provision(balance,starting_fee,rate),
+            calculate_revenue(balance,starting_fee,rate),
+            starting_fee
         ))
         pass
 

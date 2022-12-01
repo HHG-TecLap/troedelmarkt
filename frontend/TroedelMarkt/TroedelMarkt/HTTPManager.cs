@@ -49,6 +49,7 @@ namespace TroedelMarkt
 
     public class HTTPManager
     {
+        private static System.Globalization.CultureInfo InvariantCulture = System.Globalization.CultureInfo.InvariantCulture;
         private class HttpStatusCarrier : Exception
         {
             public readonly HttpStatusCode code;
@@ -145,7 +146,8 @@ namespace TroedelMarkt
         private async Task<JsonObject> CreateNewTraderRequestHandler(
             string traderID,
             string name,
-            decimal? rate
+            decimal? rate,
+            decimal? startingFee
         )
         {
             JsonObject requestBody = new JsonObject{
@@ -154,7 +156,11 @@ namespace TroedelMarkt
             };
             if (rate is not null)
             {
-                requestBody["rate"] = rate.ToString();
+                requestBody["rate"] = ((decimal)rate!).ToString(InvariantCulture);
+            }
+            if (startingFee is not null)
+            {
+                requestBody["starting_fee"] = ((decimal)startingFee!).ToString(InvariantCulture);
             }
             try
             {
@@ -191,17 +197,19 @@ namespace TroedelMarkt
                 await CreateNewTraderRequestHandler(
                     trader.TraderID,
                     trader.Name,
-                    trader.ProvisionRate
+                    trader.ProvisionRate,
+                    trader.StartingFee
                 )
             );
         }
         public async Task<Trader> CreateNewTrader(
             string traderID,
             string name,
-            decimal? rate
+            decimal? rate,
+            decimal? startingFee
         )
         {
-            return Trader.FromJson(await CreateNewTraderRequestHandler(traderID, name, rate));
+            return Trader.FromJson(await CreateNewTraderRequestHandler(traderID, name, rate,startingFee));
         }
 
         /*
@@ -212,7 +220,18 @@ namespace TroedelMarkt
 		*/
         public async Task<Trader[]> GetAllTraders()
         {
-            JsonArray responseObject = await RawGetRequest<JsonArray>("/sellers");
+            JsonArray responseObject;
+            try
+            {
+                responseObject = await RawGetRequest<JsonArray>("/sellers");
+            } catch (HttpStatusCarrier e)
+            {
+                switch (e.code)
+                {
+                    default:
+                        throw new ClientException($"Server responded with unexpected status code {e.code}", e);
+                }
+            }
 
             Trader[] traders = new Trader[responseObject.Count];
             int i = 0;
