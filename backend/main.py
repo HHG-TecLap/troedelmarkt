@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, Response, Body, Request, Security, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.security.api_key import APIKeyBase, APIKey, APIKeyIn
 from .database import session_factory, Base, engine
 from .schemas import *
@@ -177,7 +177,7 @@ def ep_sell(
         error_message[str(relevant_index)][0].append("sellerId")
     
     if len(error_message) > 0:
-        return Response(error_message,400)
+        return JSONResponse(error_message,400)
     
     relevant_sellers: set[Seller] = set()
     for item in items:
