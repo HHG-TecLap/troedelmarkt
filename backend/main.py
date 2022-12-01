@@ -13,6 +13,7 @@ from csv import writer as csv_writer
 from hmac import compare_digest
 from .config_reader import CONFIG
 from .transaction_logger import TransactionLogger
+from .calculations import *
 import jwt
 from time import time as timestamp
 from typing import Literal
@@ -206,17 +207,19 @@ def ep_exportcsv(
     sellers = crud.get_all_sellers(session)
     io = StringIO()
     writer = csv_writer(io)
-    writer.writerow(("Trader ID","Name","Sum of all Sales","Provision Rate","Total Provision","Trader earnings"))
+    writer.writerow(("Trader ID","Name","Sum of all Sales","Provision Rate","Total Provision","Trader earnings", "Starting Fee"))
     for s in sellers:
         balance = Decimal(s.balance)
         rate = Decimal(s.rate)
+        starting_fee = Decimal(s.starting_fee)
         writer.writerow((
             s.id,
             s.name,
             balance,
             rate,
-            balance*rate,
-            balance*(1-rate)
+            calculate_provision(balance,starting_fee,rate),
+            calculate_revenue(balance,starting_fee,rate),
+            starting_fee
         ))
         pass
 
