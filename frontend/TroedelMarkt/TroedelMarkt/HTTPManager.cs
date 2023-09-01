@@ -12,55 +12,47 @@ namespace TroedelMarkt
 {
     public class ClientException : Exception
     {
-        public ClientException() : base() { }
-        public ClientException(string message) : base(message) { }
-        public ClientException(string message, Exception innerException) : base(message, innerException) { }
+        public readonly HttpStatusCode? code;
+
+        public ClientException(HttpStatusCode? code) : this(code, null) { }
+        public ClientException(HttpStatusCode? code, string? message) : this(code, message, null) { }
+        public ClientException(HttpStatusCode? code, string? message, Exception? innerException) : base(message, innerException) {
+            this.code = code;
+        }
     }
     public class UnauthorizedException : ClientException
     {
-        public UnauthorizedException() : base() { }
-        public UnauthorizedException(string message) : base(message) { }
-        public UnauthorizedException(string message, Exception innerException) : base(message, innerException) { }
+        public UnauthorizedException() : this(null) { }
+        public UnauthorizedException(string? message) : this(message, null) { }
+        public UnauthorizedException(string? message, Exception? innerException) : base(HttpStatusCode.Unauthorized, message, innerException) { }
     }
     public class NotFoundException : ClientException
     {
-        public NotFoundException() : base() { }
-        public NotFoundException(string message) : base(message) { }
-        public NotFoundException(string message, Exception innerException) : base(message, innerException) { }
+        public NotFoundException() : this(null) { }
+        public NotFoundException(string? message) : this(message,null) { }
+        public NotFoundException(string? message, Exception? innerException) : base(HttpStatusCode.NotFound, message, innerException) { }
     }
     public class DuplicateException : ClientException
     {
-        public DuplicateException() : base() { }
-        public DuplicateException(string message) : base(message) { }
-        public DuplicateException(string message, Exception innerException) : base(message, innerException) { }
+        public DuplicateException() : this(null) { }
+        public DuplicateException(string? message) : this(message, null) { }
+        public DuplicateException(string? message, Exception? innerException) : base(HttpStatusCode.Conflict, message, innerException) { }
     }
     public class DeletionOrderException : ClientException
     {
-        public DeletionOrderException() : base() { }
-        public DeletionOrderException(string message) : base(message) { }
-        public DeletionOrderException(string message, Exception innerException) : base(message, innerException) { }
+        public DeletionOrderException() : base(null) { }
+        public DeletionOrderException(string? message) : this(message,null) { }
+        public DeletionOrderException(string? message, Exception? innerException) : base(HttpStatusCode.Conflict, message, innerException) { }
     }
     public class FailedDeserializeException : ClientException
     {
-        public FailedDeserializeException() : base() { }
-        public FailedDeserializeException(string message) : base(message) { }
-        public FailedDeserializeException(string message, Exception innerException) : base(message, innerException) { }
+        public FailedDeserializeException() : this(null) { }
+        public FailedDeserializeException(string? message) : this(message, null) { }
+        public FailedDeserializeException(string? message, Exception? innerException) : base(null, message, innerException) { }
     }
 
     public class HTTPManager
     {
-        private class HttpStatusCarrier : Exception
-        {
-            public readonly HttpStatusCode code;
-            public readonly HttpContent content;
-            public HttpStatusCarrier(HttpStatusCode code, HttpContent content)
-            {
-                this.code = code;
-                this.content = content;
-            }
-        }
-
-
         private static readonly HttpClient httpClient = new HttpClient();
 
         private Uri _baseURI;
@@ -131,7 +123,7 @@ namespace TroedelMarkt
                         throw new UnauthorizedException();
                     default:
                         {
-                            throw new ClientException("Authentication returned non-standard status code.");
+                            throw new ClientException(response.StatusCode, "Authentication returned non-standard status code.");
                         }
                 }
             }
@@ -164,16 +156,16 @@ namespace TroedelMarkt
                     requestBody
                 );
             }
-            catch (HttpStatusCarrier e)
+            catch (ClientException e)
             {
                 switch (e.code)
                 {
                     case HttpStatusCode.Conflict:
                         throw new DuplicateException($"A trader with the id {traderID} already exists.", e);
                     case HttpStatusCode.BadRequest:
-                        throw new ClientException("The request was not formatted correctly. This is on some level always an error in this class.", e);
+                        throw new ClientException(HttpStatusCode.BadRequest,"The request was not formatted correctly. This is on some level always an error in this class.", e);
                     default:
-                        throw new ClientException($"The server sent an unknown response code {e.code}", e);
+                        throw new ClientException(e.code, $"The server sent an unknown response code {e.code}", e);
                 }
             }
         }
@@ -240,14 +232,14 @@ namespace TroedelMarkt
             {
                 responseObject = await RawGetRequest<JsonObject>($"/seller/{traderID}");
             }
-            catch (HttpStatusCarrier e)
+            catch (ClientException e)
             {
                 switch (e.code)
                 {
                     case HttpStatusCode.NotFound:
                         throw new NotFoundException($"No seller with the id {traderID} exists", e);
                     default:
-                        throw new ClientException($"Server responded with unexpected status code {e.code}", e);
+                        throw new ClientException(e.code, $"Server responded with unexpected status code {e.code}", e);
                 }
             }
 
@@ -262,7 +254,7 @@ namespace TroedelMarkt
                 // NOTE: traderID are assumed to be alphanumeric. This is enforced by the UI
                 return await RawDeleteRequest<JsonObject>($"/seller/{traderID}");
             }
-            catch (HttpStatusCarrier e)
+            catch (ClientException e)
             {
                 switch (e.code)
                 {
@@ -271,7 +263,7 @@ namespace TroedelMarkt
                     case HttpStatusCode.NotFound:
                         throw new NotFoundException($"No trader with id {traderID} exists.");
                     default:
-                        throw new ClientException($"Server responded with unexpected status code {e.code}", e);
+                        throw new ClientException(e.code, $"Server responded with unexpected status code {e.code}", e);
                 }
             }
         }
@@ -311,16 +303,16 @@ namespace TroedelMarkt
                     trader.ToJson()
                 );
             }
-            catch (HttpStatusCarrier e)
+            catch (ClientException e)
             {
                 switch (e.code)
                 {
                     case HttpStatusCode.NotFound:
                         throw new NotFoundException($"No trader with the id {trader.TraderID} exists.", e);
                     case HttpStatusCode.BadRequest:
-                        throw new ClientException("The request was formatted incorrectly. This is always an error within this class structure");
+                        throw new ClientException(HttpStatusCode.BadRequest,"The request was formatted incorrectly. This is always an error within this class structure");
                     default:
-                        throw new ClientException($"The server responded with an unexpected status code {e.code}", e);
+                        throw new ClientException(e.code, $"The server responded with an unexpected status code {e.code}", e);
                 }
             }
 
@@ -351,14 +343,14 @@ namespace TroedelMarkt
                     content
                 );
             }
-            catch (HttpStatusCarrier e)
+            catch (ClientException e)
             {
                 switch (e.code)
                 {
                     case HttpStatusCode.BadRequest:
-                        throw new ClientException($"The server received an invaild URI format. This is always an internal error", e);
+                        throw new ClientException(HttpStatusCode.BadRequest, $"The server received an invaild URI format. This is always an internal error", e);
                     default:
-                        throw new ClientException($"The server responded with an unexpected status code {e.code}\n{await e.content.ReadAsStringAsync()}", e);
+                        throw new ClientException(e.code, $"The server responded with an unexpected status code {e.code}", e);
                 }
             }
 
@@ -446,7 +438,7 @@ namespace TroedelMarkt
             }
             if (!response.IsSuccessStatusCode)
             {
-                throw new HttpStatusCarrier(response.StatusCode, response.Content);
+                throw new ClientException(response.StatusCode);
             }
             return response.Content;
         }
