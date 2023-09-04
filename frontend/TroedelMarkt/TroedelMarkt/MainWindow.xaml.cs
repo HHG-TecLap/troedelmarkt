@@ -31,7 +31,7 @@ namespace TroedelMarkt
         public List<string> TraderIDs { get; set; } //needs to be filld with proper API data (currently silled for debug)
 
         public HTTPManager hTTPManager { get; set; }
-        private Window1 wind1;
+        private TraderView wind1;
         public MainWindow()
         {
             InitializeComponent();
@@ -162,13 +162,13 @@ namespace TroedelMarkt
         {
             if(wind1 == null)
             {
-                wind1 = new Window1(hTTPManager);
+                wind1 = new Haendleransicht(hTTPManager);
                 wind1.Owner = this;
                 wind1.Show();
             }
             else if (wind1.active == false)
             {
-                wind1 = new Window1(hTTPManager);
+                wind1 = new Haendleransicht(hTTPManager);
                 wind1.Owner = this;
                 wind1.Show();
             }
