@@ -67,17 +67,20 @@ namespace TroedelMarkt
             Revenue = revenue;
         }
 
-        public static Trader FromJson(JsonObject data)
-        {
-            return new Trader(
+        /// <summary>
+        /// Constructor for <see cref="Trader"/> class generating from <seealso cref="JsonObject"/>.
+        /// </summary>
+        /// <param name="data"> <seealso cref="JsonObject"/> that is decoded into a <see cref="Trader"/>.</param>
+        public Trader(JsonObject data) :
+            this(
                 data["id"]!.ToString(),
                 data["name"]!.ToString(),
                 decimal.Parse(data["balance"]!.ToString(),InvariantCulture),
                 decimal.Parse(data["revenue"]!.ToString(),InvariantCulture),
                 decimal.Parse(data["rate"]!.ToString(),InvariantCulture),
                 decimal.Parse(data["provision"]!.ToString(),InvariantCulture)
-            );
-        }
+            )
+        { }
 
         /// <summary>
         /// Updating <see cref="Trader"/> from <seealso cref="JsonObject"/>.

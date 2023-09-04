@@ -193,7 +193,7 @@ namespace TroedelMarkt
             decimal? rate
         )
         {
-            return Trader.FromJson(await CreateNewTraderRequestHandler(traderID, name, rate));
+            return new Trader(await CreateNewTraderRequestHandler(traderID, name, rate));
         }
 
         /*
@@ -210,7 +210,7 @@ namespace TroedelMarkt
             int i = 0;
             foreach (JsonObject? singleJsonObject in responseObject)
             {
-                traders[i] = Trader.FromJson(singleJsonObject!);
+                traders[i] = new Trader(singleJsonObject!);
                 i++;
             }
 
@@ -243,7 +243,7 @@ namespace TroedelMarkt
                 }
             }
 
-            return Trader.FromJson(responseObject);
+            return new Trader(responseObject);
         }
 
 
@@ -277,11 +277,11 @@ namespace TroedelMarkt
         */
         public async Task<Trader> DeleteTrader(string traderID)
         {
-            return Trader.FromJson(await DeleteTraderRequestHandler(traderID));
+            return new Trader(await DeleteTraderRequestHandler(traderID));
         }
         public async Task<Trader> DeleteTrader(Trader trader)
         {
-            return Trader.FromJson(await DeleteTraderRequestHandler(trader.TraderID));
+            return new Trader(await DeleteTraderRequestHandler(trader.TraderID));
         }
 
         /*
@@ -358,7 +358,7 @@ namespace TroedelMarkt
             foreach (JsonNode? traderJson in responseObject)
             {
                 traderList.Add(
-                    Trader.FromJson((JsonObject)traderJson!)
+                    new Trader((JsonObject)traderJson!)
                 );
             }
             return traderList.ToArray();
