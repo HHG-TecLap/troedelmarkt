@@ -18,16 +18,31 @@ using System.Windows.Shapes;
 namespace TroedelMarkt
 {
     /// <summary>
-    /// Interaktionslogik für Window1.xaml
+    /// Interactionligic for TraderView.xaml
     /// </summary>
     public partial class TraderView : Window
     {
+        /// <summary>
+        /// The list of <see cref="Trader"/>s
+        /// </summary>
         public List<Trader> Traders { get; set; } //Traders get pullt from API
+        /// <summary>
+        /// The <see cref="Trader.TraderID"/> for creating a new <see cref="Trader"/>
+        /// </summary>
         public string newTraderID { get; set; }
+        /// <summary>
+        /// The <see cref="HTTPManager"/> for handeling communication with the server
+        /// </summary>
         public HTTPManager hTTPManager { get; set; }
-
+        /// <summary>
+        /// Wether the Window is active or not 
+        /// </summary>
         public bool active { get; set; }
         
+        /// <summary>
+        /// Constructir for initialising the TraderView
+        /// </summary>
+        /// <param name="httmMan">The <see cref="HTTPManager"/> for cummunication with the server</param>
         public TraderView( HTTPManager httmMan)
         {
             InitializeComponent();
@@ -38,9 +53,11 @@ namespace TroedelMarkt
             hTTPManager = httmMan;
             updateData();
             active= true;
-
         }
 
+        /// <summary>
+        /// Function for handeling clicks of the AddTraderButton
+        /// </summary>
         private async void BtnAddTdr_Click(object sender, RoutedEventArgs e)
         { // API update database
             Regex alphanum = new Regex(@"^[a-zA-Z0-9]*$");
@@ -63,6 +80,9 @@ namespace TroedelMarkt
             updateData();
         }
 
+        /// <summary>
+        /// Function for hadeling clicks on the DeleteTraderButton
+        /// </summary>
         private async void BtnDelTdr_Click(object sender, RoutedEventArgs e)
         {
             if (DGTrader.SelectedIndex != -1)
@@ -96,22 +116,26 @@ namespace TroedelMarkt
             updateStatistics();
         }
 
+        /// <summary>
+        /// Function for handeling SelectionChanged events on the Trader Datagrid
+        /// </summary>
         private void DGSelection_Changed(object sender, SelectionChangedEventArgs e)
         {
             updateData();
         }
 
         /// <summary>
-        /// Sends canges to API and updates local data.
+        /// Function for visualising changed data in the Trader Datagrid
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void DGCellEditEnd(object sender, DataGridCellEditEndingEventArgs e)
         {
             BtnUpdateTraders.IsEnabled = true;
             e.Row.Background = Brushes.Chartreuse;
         }
 
+        /// <summary>
+        /// Function for handeling of Exporting data as CSV
+        /// </summary>
         private async void ExportCSV_Click(object sender, RoutedEventArgs e)
         {
             Microsoft.Win32.SaveFileDialog saveDia = new Microsoft.Win32.SaveFileDialog();
@@ -136,6 +160,9 @@ namespace TroedelMarkt
             }
         }
 
+        /// <summary>
+        /// Function for handeling clicks on the UpdateDataButton
+        /// </summary>
         private void BtnUpdateData_Click(object sender, RoutedEventArgs e)
         {
             updateData();
@@ -174,6 +201,9 @@ namespace TroedelMarkt
             TBlockProvSumm.Text = $"Provisions Summe: {provSumm.ToString("C")}";
         }
 
+        /// <summary>
+        /// Function for handeling Clocks on the UpdateTRadersButton
+        /// </summary>
         private async void BtnUpdateTraders_Click(object sender, RoutedEventArgs e)
         {
             if (DGTrader.SelectedIndex != -1)
@@ -202,6 +232,9 @@ namespace TroedelMarkt
             BtnUpdateTraders.IsEnabled = false;
         }
 
+        /// <summary>
+        /// Function for handeling the closing of the window
+        /// </summary>
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             active = false;
