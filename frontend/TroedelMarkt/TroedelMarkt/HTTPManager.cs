@@ -10,6 +10,9 @@ using System.Linq;
 
 namespace TroedelMarkt
 {
+    /// <summary>
+    /// An exeption thrown, when a HttpError occures 
+    /// </summary>
     public class ClientException : Exception
     {
         public readonly HttpStatusCode? code;
@@ -20,30 +23,45 @@ namespace TroedelMarkt
             this.code = code;
         }
     }
+    /// <summary>
+    /// An exception thrown, when a HttpUnouthorisedError occures
+    /// </summary>
     public class UnauthorizedException : ClientException
     {
         public UnauthorizedException() : this(null) { }
         public UnauthorizedException(string? message) : this(message, null) { }
         public UnauthorizedException(string? message, Exception? innerException) : base(HttpStatusCode.Unauthorized, message, innerException) { }
     }
+    /// <summary>
+    ///  An exception thrown, when a HttpNotFoundError occures
+    /// </summary>
     public class NotFoundException : ClientException
     {
         public NotFoundException() : this(null) { }
         public NotFoundException(string? message) : this(message,null) { }
         public NotFoundException(string? message, Exception? innerException) : base(HttpStatusCode.NotFound, message, innerException) { }
     }
+    /// <summary>
+    ///  An exception thrown, when an HttpConflictError occures due to an duplicate error
+    /// </summary>
     public class DuplicateException : ClientException
     {
         public DuplicateException() : this(null) { }
         public DuplicateException(string? message) : this(message, null) { }
         public DuplicateException(string? message, Exception? innerException) : base(HttpStatusCode.Conflict, message, innerException) { }
     }
+    /// <summary>
+    ///  An exception thrown, when a deletion odrer has an error
+    /// </summary>
     public class DeletionOrderException : ClientException
     {
         public DeletionOrderException() : base(null) { }
         public DeletionOrderException(string? message) : this(message,null) { }
         public DeletionOrderException(string? message, Exception? innerException) : base(HttpStatusCode.Conflict, message, innerException) { }
     }
+    /// <summary>
+    /// An exception thrown, when a a deserialisation failded 
+    /// </summary>
     public class FailedDeserializeException : ClientException
     {
         public FailedDeserializeException() : this(null) { }
@@ -51,6 +69,9 @@ namespace TroedelMarkt
         public FailedDeserializeException(string? message, Exception? innerException) : base(null, message, innerException) { }
     }
 
+    /// <summary>
+    /// A class for managing Http communications with the server
+    /// </summary>
     public class HTTPManager
     {
         private static readonly HttpClient httpClient = new HttpClient();
@@ -58,8 +79,15 @@ namespace TroedelMarkt
         private Uri _baseURI;
         private AuthenticationHeaderValue? _authenticationKey;
 
+        /// <summary>
+        /// The <see cref="Uri"/> used to connect to the server
+        /// </summary>
         public Uri BaseUri { get { return _baseURI; } }
 
+        /// <summary>
+        /// The constructor for creation a <see cref="HTTPManager"/>
+        /// </summary>
+        /// <param name="uri"> The <see cref="Uri"/> used to connect to the server</param>
         private HTTPManager(Uri uri)
         {
             _baseURI = uri;
@@ -74,6 +102,17 @@ namespace TroedelMarkt
 		 *  NotFoundException: The server specified does not reply.
 		 *  ClientException: The server returned a non-standard status code
 		*/
+        /// <summary>
+        /// Creates a authenticated copy of the currend <see cref="HTTPManager"/>
+        /// </summary>
+        /// <remarks>This is an asynchronous method</remarks>
+        /// <param name="ip_or_hostname">Adress used to connect to the server</param>
+        /// <param name="port">The port to connect to</param>
+        /// <param name="password">The password for authenticating on the server </param>
+        /// <exception cref="UnauthorizedException">The password is incorrect</exception>
+        /// <exception cref="NotFoundException">The server specified does not reply</exception>
+        /// <exception cref="ClientException">The server returned a non-standard status code</exception>
+        /// <returns>A already authenticated copy of the <see cref="HTTPManager"/></returns>
         public async static Task<HTTPManager> NewAuthenticated(
             string ip_or_hostname,
             int? port,
@@ -89,7 +128,12 @@ namespace TroedelMarkt
             return newObject;
         }
 
-
+        /// <summary>
+        /// Generates a <see cref="Uri"/> from ip or hostname and port of the server
+        /// </summary>
+        /// <param name="ip_or_hostname">Ipadress or hostname of the server</param>
+        /// <param name="port">The port the server is running on</param>
+        /// <returns>The <see cref="Uri"/> constructed from the given input</returns>
         private static Uri ConstructBaseUri(string ip_or_hostname, int? port)
         {
             UriBuilder builder = new UriBuilder(
@@ -109,6 +153,14 @@ namespace TroedelMarkt
 		 *  NotFoundException: The server specified does not reply.
 		 *  ClientException: The server returned a non-standard status code
 		*/
+        /// <summary>
+        /// A method used for authenticating th <see cref="HTTPManager"/>
+        /// </summary>
+        /// <remarks>This is an asynchronous method</remarks>
+        /// <param name="password">The password to authenticate with</param>
+        /// <exception cref="UnauthorizedException">The password is incorrect</exception>
+        /// <exception cref="NotFoundException">The server specified does not reply</exception>
+        /// <exception cref="ClientException">The server returned a non-standard status code</exception>
         protected async Task Authenticate(string password)
         {
             HttpResponseMessage response = await httpClient.PostAsync(
@@ -133,7 +185,16 @@ namespace TroedelMarkt
             );
         }
 
-
+        /// <summary>
+        /// Crates a request for creating a new <see cref="Trader"/> on the server
+        /// </summary>
+        /// <remarks>This is an asynchronous method</remarks>
+        /// <param name="traderID">The id of the new <see cref="Trader"/></param>
+        /// <param name="name">The name of the new <see cref="Trader"/></param>
+        /// <param name="rate">The provision rate of the new <see cref="Trader"/></param>
+        /// <returns></returns>
+        /// <exception cref="DuplicateException"></exception>
+        /// <exception cref="ClientException"></exception>
         private async Task<JsonObject> CreateNewTraderRequestHandler(
             string traderID,
             string name,
@@ -177,7 +238,13 @@ namespace TroedelMarkt
 		 *  UnauthorizedException: The client is not authenticated.
 		 *  DuplicateException: A trader with this trader.TraderID already exists.
 		*/
-        public async Task<Trader> CreateNewTrader(string newTraderID, Trader trader)
+        /// <summary>
+        /// Creates a new <see cref="Trader"/> on the server
+        /// </summary>
+        /// <remarks>This is an asynchronous method</remarks>
+        /// <param name="trader">The <see cref="Trader"/> to add to the server</param>
+        /// <returns></returns>
+        public async Task<Trader> CreateNewTrader(Trader trader)
         {
             return trader.UpdateFromJson(
                 await CreateNewTraderRequestHandler(
@@ -187,6 +254,14 @@ namespace TroedelMarkt
                 )
             );
         }
+        /// <summary>
+        /// Creates a new <see cref="Trader"/> on the server
+        /// </summary>
+        /// <remarks>This is an asynchronous method</remarks>
+        /// <param name="traderID">The <see cref="Trader.TraderID"/> of the new trader</param>
+        /// <param name="name">The <see cref="Trader.Name"/> of the new trader</param>
+        /// <param name="rate">The <see cref="Trader.ProvisionRate"/> of the new trader</param>
+        /// <returns></returns>
         public async Task<Trader> CreateNewTrader(
             string traderID,
             string name,
@@ -202,6 +277,11 @@ namespace TroedelMarkt
 		 * Raises:
 		 *  UnauthorizedException: The client is not authenticated.
 		*/
+        /// <summary>
+        /// A request for getting all <see cref="Trader"/>s from the server
+        /// </summary>
+        /// <remarks>This is an asynchronous method</remarks>
+        /// <returns>All <see cref="Trader"/>s on the server</returns>
         public async Task<Trader[]> GetAllTraders()
         {
             JsonArray responseObject = await RawGetRequest<JsonArray>("/sellers");
@@ -224,6 +304,14 @@ namespace TroedelMarkt
 		 *  UnauthorizedException: The client is not authenticated.
 		 *  NotFoundException: No trader with this id exists.
 		*/
+        /// <summary>
+        /// A request for getting a <see cref="Trader"/> ny its <see cref="Trader.TraderID"/>
+        /// </summary>
+        /// <remarks>This is an asynchronous method</remarks>
+        /// <param name="traderID">The <see cref="Trader.TraderID"/> of the <see cref="Trader"/></param>
+        /// <returns>Tht <see cref="Trader"/> with the given <see cref="Trader.TraderID"/></returns>
+        /// <exception cref="NotFoundException"></exception>
+        /// <exception cref="ClientException"></exception>
         public async Task<Trader> GetTrader(string traderID)
         {
             // NOTE: traderID are assumed to be alphanumeric. This is enforced by the UI
@@ -246,7 +334,15 @@ namespace TroedelMarkt
             return new Trader(responseObject);
         }
 
-
+        /// <summary>
+        ///Creates a request for deleting a <see cref="Trader"/>
+        /// </summary>
+        /// <remarks>This is an asynchronous method</remarks>
+        /// <param name="traderID">The <see cref="Trader.TraderID"/> of the <see cref="Trader"/> to delete</param>
+        /// <returns></returns>
+        /// <exception cref="DeletionOrderException"></exception>
+        /// <exception cref="NotFoundException"></exception>
+        /// <exception cref="ClientException"></exception>
         private async Task<JsonObject> DeleteTraderRequestHandler(string traderID)
         {
             try
@@ -275,10 +371,19 @@ namespace TroedelMarkt
          *  NotFoundException: No trader with the specified id exists.
          *  DeletionOrderException: The selected trader has stored balance and cannot be deleted.
         */
+        /// <summary>
+        /// Deletes a <see cref="Trader"/> on the server
+        /// </summary>
+        /// <remarks>This is an asynchronous method</remarks>
+        /// <param name="traderID">The <see cref="Trader.TraderID"/> of the <see cref="Trader"/> to delete</param>
+        /// <returns>The trader that was just deleted with all the previously existing information</returns>
         public async Task<Trader> DeleteTrader(string traderID)
         {
             return new Trader(await DeleteTraderRequestHandler(traderID));
         }
+        /// <inheritdoc cref="DeleteTrader(string)"/>
+        /// <param name="trader">The <see cref="Trader"/> to delete</param>
+        /// <returns>The trader that was just deleted with all the previously existing information</returns>
         public async Task<Trader> DeleteTrader(Trader trader)
         {
             return new Trader(await DeleteTraderRequestHandler(trader.TraderID));
@@ -291,6 +396,14 @@ namespace TroedelMarkt
          *  UnauthorizedException: The client is not authenticated.
          *  NotFoundException: No trader with trader.TraderID exists.
         */
+        /// <summary>
+        /// Updates a <see cref="Trader"/> on the server
+        /// </summary>
+        /// <remarks>This is an asynchronous method</remarks>
+        /// <param name="trader">The <see cref="Trader"/> to update</param>
+        /// <returns>The Trader instance passed in with all applied updates</returns>
+        /// <exception cref="NotFoundException"></exception>
+        /// <exception cref="ClientException"></exception>
         public async Task<Trader> UpdateTrader(Trader trader)
         {
             JsonObject responseObject;
@@ -326,6 +439,16 @@ namespace TroedelMarkt
          * Raises:
          *  UnauthorizedException: The client is not authenticated.
         */
+        /// <summary>
+        /// Handels selling <see cref="TransactionItem"/>s
+        /// </summary>
+        /// <remarks>This is an asynchronous method</remarks>
+        /// <param name="items">The <see cref="TransactionItem"/>s to sell</param>
+        /// <returns>
+        /// It returns an array of all the Traders that have been changed.
+        /// These are new objects, not old ones being updated
+        /// </returns>
+        /// <exception cref="ClientException"></exception>
         public async Task<Trader[]> SellItems(TransactionItem[] items)
         {
             JsonArray content = new JsonArray();
@@ -363,11 +486,16 @@ namespace TroedelMarkt
             }
             return traderList.ToArray();
         }
+        /// <inheritdoc cref="SellItems(TransactionItem[])"/>
         public async Task<Trader[]> SellItems(System.Collections.Generic.List<TransactionItem> items)
         {
             return await SellItems(items.ToArray());
         }
 
+        /// <summary>
+        /// Exports the database as a CSV
+        /// </summary>
+        /// <returns>The CSV file as a <see cref="System.IO.Stream"/></returns>
         public async Task<System.IO.Stream> ExportCsv()
         {
             HttpContent responseContent = await RawSendNoDecode(HttpMethod.Get, "/exportcsv");
