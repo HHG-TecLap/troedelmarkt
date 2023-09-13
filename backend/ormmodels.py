@@ -9,3 +9,4 @@ class Seller(Base):
     name = Column(Text,nullable=False)
     rate = Column(Text,nullable=False)
     balance = Column(Text,nullable=False,default=0)
+    starting_fee = Column(Text,nullable=False,default=0)

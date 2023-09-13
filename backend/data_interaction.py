@@ -2,7 +2,7 @@ from .ormmodels import Seller
 from .schemas import SellerClientModel, SellerModifyModel
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from sqlite3 import IntegrityError
+from sqlalchemy.exc import IntegrityError
 
 __all__ = (
     "get_all_sellers",
@@ -25,9 +25,10 @@ def new_seller(session: Session, schema: SellerClientModel) -> Seller:
     seller = schema.to_sql()
     try:
         session.add(seller)
+        session.commit()
     except IntegrityError as e:
+        session.rollback()
         raise RuntimeError("A trader with the specified ID already exists") from e
-    session.commit()
     return seller
     pass
 
@@ -49,6 +50,8 @@ def update_seller(
         seller.name = schema.name
     if schema.rate is not None:
         seller.rate = str(schema.rate)
+    if schema.starting_fee is not None:
+        seller.starting_fee = str(schema.starting_fee)
 
     session.commit()
     return seller
