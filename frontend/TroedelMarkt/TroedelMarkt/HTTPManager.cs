@@ -376,6 +376,9 @@ namespace TroedelMarkt
         /// </summary>
         /// <remarks>This is an asynchronous method</remarks>
         /// <param name="traderID">The <see cref="Trader.TraderID"/> of the <see cref="Trader"/> to delete</param>
+        /// <exception cref="DeletionOrderException"></exception>
+        /// <exception cref="NotFoundException"></exception>
+        /// <exception cref="ClientException"></exception>
         /// <returns>The trader that was just deleted with all the previously existing information</returns>
         public async Task<Trader> DeleteTrader(string traderID)
         {
@@ -486,6 +489,7 @@ namespace TroedelMarkt
             }
             return traderList.ToArray();
         }
+
         /// <inheritdoc cref="SellItems(TransactionItem[])"/>
         public async Task<Trader[]> SellItems(System.Collections.Generic.List<TransactionItem> items)
         {
