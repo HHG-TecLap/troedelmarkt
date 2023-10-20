@@ -39,26 +39,28 @@ namespace TroedelMarkt
         /// </summary>
         public LoginWindow()
         {
-            InitializeComponent();
-            Adress = "";
+            InitializeComponent();//Starting Component
+            //setting default data
+            Adress = ""; 
             Port = "3080";
+            //Preparing Variables for databindinig
             DataContext = Adress;
             DataContext = Port;
             
         }
 
         /// <summary>
-        /// Funtion for handeling a clock on the login button
+        /// Funtion for handling a click on the login button
         /// </summary>
         private async void TbnLogin_Click(object sender, RoutedEventArgs e)
-        {//Databinding for adress with regex
+        {
             try 
-            {
+            {//trying to bould a connection
                 httpManager = await HTTPManager.NewAuthenticated(Adress,int.Parse(Port), PBoxPassword.Password);
                 DialogResult = true;
             }
             catch(Exception ex) 
-            { 
+            {//giving feedback to the user, if building a connection failed
                 if(ex is UnauthorizedException)
                 {
                     TBlockResponce.Text = "Passwort falsch";
@@ -69,7 +71,7 @@ namespace TroedelMarkt
                 }
                 else
                 {
-                    TBlockResponce.Text = $"Es ist ein unbekannter Fehler aufgetreten\n{ex.Message},\n{ex.GetType()}";
+                    TBlockResponce.Text = "Es ist ein unbekannter Fehler aufgetreten";
                     MessageBox.Show($"{ex.Message},\n{ex.GetType()}");
                 }
             }

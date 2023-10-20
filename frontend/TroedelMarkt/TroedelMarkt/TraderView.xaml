@@ -15,7 +15,7 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="DGTrader" d:ItemsSource="{d:SampleData ItemCount=5}" ItemsSource="{Binding Traders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Haendleransicht}}}" AutoGenerateColumns="False" Grid.ColumnSpan="2" CellEditEnding="DGCellEditEnd" AlternationCount="2" AlternatingRowBackground="LightSlateGray">
+        <DataGrid x:Name="DGTrader" d:ItemsSource="{d:SampleData ItemCount=5}" ItemsSource="{Binding Traders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:Trader}}}" AutoGenerateColumns="False" Grid.ColumnSpan="2" CellEditEnding="DGCellEditEnd" AlternationCount="2" AlternatingRowBackground="LightSlateGray" SelectionChanged="DGSelection_Changed" CanUserDeleteRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Händler ID" Binding="{Binding TraderID , Mode=OneWay}"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name,Mode=TwoWay}"/>
@@ -31,7 +31,7 @@
                 <Label Content="Händler ID" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Margin="10,10,10,10"/>
                 <TextBox x:Name="TBoxTraderID" TextWrapping="Wrap" VerticalAlignment="Bottom" Margin="10,10,10,10">
                     <TextBox.Text>
-                        <Binding Path ="newTraderID" RelativeSource="{RelativeSource AncestorType={x:Type local:Haendleransicht}}" UpdateSourceTrigger="PropertyChanged">
+                        <Binding Path ="newTraderID" RelativeSource="{RelativeSource AncestorType={x:Type local:Trader}}" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
                                 <local:TraderIDValidation pattern="^[a-zA-Z0-9]*$"/>
                             </Binding.ValidationRules>
