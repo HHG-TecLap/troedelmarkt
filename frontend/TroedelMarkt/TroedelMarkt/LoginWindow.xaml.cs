@@ -54,6 +54,7 @@ namespace TroedelMarkt
         /// </summary>
         private async void TbnLogin_Click(object sender, RoutedEventArgs e)
         {
+            (sender as Button).IsEnabled = false;
             try 
             {//trying to bould a connection
                 httpManager = await HTTPManager.NewAuthenticated(Adress,int.Parse(Port), PBoxPassword.Password);
@@ -72,9 +73,10 @@ namespace TroedelMarkt
                 else
                 {
                     TBlockResponce.Text = "Es ist ein unbekannter Fehler aufgetreten";
-                    MessageBox.Show($"{ex.Message},\n{ex.GetType()}");
+                    MessageBox.Show($"{ex.Message},\n{ex.GetType()}","Ein Fehler ist aufgetreten");
                 }
             }
+            (sender as Button).IsEnabled = true;
         }
     }
 
