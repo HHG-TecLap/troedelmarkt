@@ -7,7 +7,8 @@ def calculate_revenue(
     /
 ) -> Decimal:
     return (balance-starting_fee)\
-        *(1-provision_rate)
+        *(1-provision_rate) if (balance-starting_fee)\
+        *(1-provision_rate) > 0 else 0
 
 def calculate_provision(
     balance: Decimal, 
@@ -16,4 +17,5 @@ def calculate_provision(
     /
 ) -> Decimal:
     return (balance-starting_fee)\
-        *provision_rate
+        *provision_rate if (balance-starting_fee)\
+        *provision_rate > 0 else 0
