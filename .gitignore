@@ -5,3 +5,5 @@ backend/transactions/
 venv
 __pycache__/
 .vs/
+frontend/TroedelMarkt/TroedelMarkt/obj
+frontend/TroedelMarkt/TroedelMarkt/bin

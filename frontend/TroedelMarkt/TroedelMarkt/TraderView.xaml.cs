@@ -18,9 +18,9 @@ using System.Windows.Shapes;
 namespace TroedelMarkt
 {
     /// <summary>
-    /// Interaktionslogik für Window1.xaml
+    /// Interaktionslogik für TraderView.xaml
     /// </summary>
-    public partial class Window1 : Window
+    public partial class TraderView : Window
     {
         public List<Trader> Traders { get; set; } //Traders get pullt from API
         public string newTraderID { get; set; }
@@ -28,7 +28,7 @@ namespace TroedelMarkt
 
         public bool active { get; set; }
         
-        public Window1( HTTPManager httmMan)
+        public TraderView( HTTPManager httmMan)
         {
             InitializeComponent();
             Traders = new List<Trader>();
