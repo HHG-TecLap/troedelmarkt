@@ -31,7 +31,7 @@ namespace TroedelMarkt
         public List<string> TraderIDs { get; set; } //needs to be filld with proper API data (currently silled for debug)
 
         public HTTPManager hTTPManager { get; set; }
-        private TraderView wind1;
+        private TraderView traderView;
         public MainWindow()
         {
             InitializeComponent();
@@ -55,7 +55,7 @@ namespace TroedelMarkt
             updateSumm();
             LbTransactions.SelectedIndex = 0;
 
-            wind1 = null;
+            traderView = null;
         }
 
         private void BtnDeleteElement_Click(object sender, RoutedEventArgs e)
@@ -128,11 +128,12 @@ namespace TroedelMarkt
             updateSumm();
         }
 
-        private async void BtnMakeTRansaction_Click(object sender, RoutedEventArgs e)
+        private async void BtnMakeTransaction_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show("Sind Sie sicher!\nDie Transaktion kann nicht rückgängig gemacht werden.", "Transaktion durchführen", MessageBoxButton.OKCancel, MessageBoxImage.Asterisk, MessageBoxResult.Cancel);
             if (result is MessageBoxResult.OK)
             {
+                Transactions.RemoveAll(x => x.Trader == "" & x.Value == 0);
                 foreach (TransactionItem trans in Transactions)
                 {
                     if (TraderIDs.Find(x => x == trans.Trader) == null)
@@ -149,7 +150,7 @@ namespace TroedelMarkt
                     LbTransactions.SelectedIndex = 0;
                     LbTransactions.Items.Refresh();
                     updateSumm();
-                    wind1.updateData();
+                    traderView.updateData();
                 }
                 catch (Exception ex)
                 {
@@ -160,21 +161,21 @@ namespace TroedelMarkt
 
         private void BtnTraderView_Click(object sender, RoutedEventArgs e)
         {
-            if(wind1 == null)
+            if(traderView == null)
             {
-                wind1 = new TraderView(hTTPManager);
-                wind1.Owner = this;
-                wind1.Show();
+                traderView = new TraderView(hTTPManager);
+                traderView.Owner = this;
+                traderView.Show();
             }
-            else if (wind1.active == false)
+            else if (traderView.active == false)
             {
-                wind1 = new TraderView(hTTPManager);
-                wind1.Owner = this;
-                wind1.Show();
+                traderView = new TraderView(hTTPManager);
+                traderView.Owner = this;
+                traderView.Show();
             }
             else
             {
-                wind1.WindowState= WindowState.Normal;
+                traderView.WindowState = WindowState.Normal;
             }
             
         }

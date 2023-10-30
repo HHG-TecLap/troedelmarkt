@@ -15,7 +15,7 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="DGTrader" d:ItemsSource="{d:SampleData ItemCount=5}" ItemsSource="{Binding Traders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:TraderView}}}" AutoGenerateColumns="False" Grid.ColumnSpan="2" CellEditEnding="DGCellEditEnd" AlternationCount="2" AlternatingRowBackground="LightGray">
+        <DataGrid x:Name="DGTrader" d:ItemsSource="{d:SampleData ItemCount=5}" ItemsSource="{Binding Traders, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:TraderView}}}" AutoGenerateColumns="False" Grid.ColumnSpan="2" CellEditEnding="DGCellEditEnd" AlternationCount="2" AlternatingRowBackground="LightGray" CanUserDeleteRows="True"  CanUserAddRows="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Händler ID" Binding="{Binding TraderID , Mode=OneWay}"/>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name,Mode=TwoWay}"/>

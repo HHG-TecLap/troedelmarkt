@@ -80,7 +80,7 @@ namespace TroedelMarkt
                         {
                             if (ex is DeletionOrderException)
                             {
-                                result = MessageBox.Show($"Der Händler {tdr.TraderID} kann nicht geslöscht werden, da seine Bilanz nicht 0 ist.", "Löschen fehlgeschlagen", MessageBoxButton.OKCancel, MessageBoxImage.Error);
+                                result = MessageBox.Show($"Der Händler {tdr.TraderID} kann nicht geslöscht werden, da seine Bilanz nicht 0€ ist.", "Löschen fehlgeschlagen", MessageBoxButton.OKCancel, MessageBoxImage.Error);
                                 if( result == MessageBoxResult.Cancel) 
                                 {
                                     return;
@@ -93,7 +93,6 @@ namespace TroedelMarkt
             }
             updateData();
             DGTrader.Items.Refresh();
-            updateStatistics();
         }
 
         private void DGSelection_Changed(object sender, SelectionChangedEventArgs e)
@@ -198,7 +197,6 @@ namespace TroedelMarkt
             }
             updateData();
             DGTrader.Items.Refresh();
-            updateStatistics();
             BtnUpdateTraders.IsEnabled = false;
         }
 
