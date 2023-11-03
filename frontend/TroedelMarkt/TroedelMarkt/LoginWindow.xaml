@@ -45,7 +45,7 @@
             <PasswordBox x:Name="PBoxPassword" Margin="10,10,10,10" Password=""/>
         </StackPanel>
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2">
-            <Button x:Name="TbnLogin" Content="Anmelden" Margin="10,10,10,10" Click="TbnLogin_Click" IsDefault="True"/>
+            <Button x:Name="BtnLogin" Content="Anmelden" Margin="10,10,10,10" Click="BtnLogin_Click" IsDefault="True"/>
             <TextBlock x:Name="TBlockResponce" TextWrapping="Wrap" Margin="10,10,10,10" TextAlignment="Center"/>
         </StackPanel>
     </Grid>
