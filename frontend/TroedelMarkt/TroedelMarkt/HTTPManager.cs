@@ -289,7 +289,7 @@ namespace TroedelMarkt
             decimal? startingFee
         )
         {
-            return Trader.FromJson(await CreateNewTraderRequestHandler(traderID, name, rate,startingFee));
+            return new Trader(await CreateNewTraderRequestHandler(traderID, name, rate,startingFee));
         }
 
         /*
@@ -323,7 +323,7 @@ namespace TroedelMarkt
             int i = 0;
             foreach (JsonObject? singleJsonObject in responseObject)
             {
-                traders[i] = Trader.FromJson(singleJsonObject!);
+                traders[i] = new Trader(singleJsonObject!);
                 i++;
             }
 
@@ -364,7 +364,7 @@ namespace TroedelMarkt
                 }
             }
 
-            return Trader.FromJson(responseObject);
+            return new Trader(responseObject);
         }
 
         /// <summary>
@@ -415,14 +415,14 @@ namespace TroedelMarkt
         /// <returns>The trader that was just deleted with all the previously existing information</returns>
         public async Task<Trader> DeleteTrader(string traderID)
         {
-            return Trader.FromJson(await DeleteTraderRequestHandler(traderID));
+            return new Trader(await DeleteTraderRequestHandler(traderID));
         }
         /// <inheritdoc cref="DeleteTrader(string)"/>
         /// <param name="trader">The <see cref="Trader"/> to delete</param>
         /// <returns>The trader that was just deleted with all the previously existing information</returns>
         public async Task<Trader> DeleteTrader(Trader trader)
         {
-            return Trader.FromJson(await DeleteTraderRequestHandler(trader.TraderID));
+            return new Trader(await DeleteTraderRequestHandler(trader.TraderID));
         }
 
         /*
@@ -517,7 +517,7 @@ namespace TroedelMarkt
             foreach (JsonNode? traderJson in responseObject)
             {
                 traderList.Add(
-                    Trader.FromJson((JsonObject)traderJson!)
+                    new Trader((JsonObject)traderJson!)
                 );
             }
             return traderList.ToArray();
