@@ -39,12 +39,13 @@ namespace TroedelMarkt
         /// </summary>
         public LoginWindow()
         {
-            InitializeComponent();
+            InitializeComponent();//Starting Component
+            //setting default data
             Adress = "";
             Port = "3080";
+            //Adding Variables to DataContext
             DataContext = Adress;
             DataContext = Port;
-            
         }
 
         /// <summary>
@@ -52,15 +53,16 @@ namespace TroedelMarkt
         /// </summary>
         private async void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
+            //disabeling LoginButton
             BtnLogin.IsEnabled = false;
-            try 
-            {
+            try
+            {//trying to build a connection
                 httpManager = await HTTPManager.NewAuthenticated(Adress,int.Parse(Port), PBoxPassword.Password);
                 DialogResult = true;
             }
-            catch(Exception ex) 
-            { 
-                if(ex is UnauthorizedException)
+            catch(Exception ex)
+            { //giving feedback to the user, if building a connection failed
+                if (ex is UnauthorizedException)
                 {
                     TBlockResponce.Text = "Passwort falsch";
                 }
@@ -74,6 +76,7 @@ namespace TroedelMarkt
                     MessageBox.Show($"{ex.Message},\n{ex.GetType()}","Ein Fehler ist aufgetreten",MessageBoxButton.OK,MessageBoxImage.Error);
                 }
             }
+            //Reanabeling LoginButton
             BtnLogin.IsEnabled = true;
         }
     }
