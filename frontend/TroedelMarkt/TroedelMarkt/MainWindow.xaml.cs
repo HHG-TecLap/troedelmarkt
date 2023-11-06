@@ -182,11 +182,14 @@ namespace TroedelMarkt
                     LbTransactions.SelectedIndex = 0;
                     LbTransactions.Items.Refresh();
                     updateSumm();
-                    traderView.updateData();
+                    if(traderView != null)
+                    {
+                        traderView.updateData();
+                    }
                 }
                 catch (Exception ex)
                 {//notefying of an error
-                    MessageBox.Show($"Es ist ein Fehler aufgetreten\n{ex.Message}", "Bei Transaktion durchführen");
+                    MessageBox.Show($"Es ist ein Fehler aufgetreten\n{ex.Message}", "Bei Transaktion durchführen",MessageBoxButton.OK,MessageBoxImage.Error);
                 }
             }
         }
