@@ -1,24 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Data.Common;
 using System.Globalization;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Policy;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using TroedelMarkt;
 
 namespace TroedelMarkt
 {
@@ -48,14 +35,16 @@ namespace TroedelMarkt
         /// </summary>
         public MainWindow()
         {
-            InitializeComponent();
-
+            InitializeComponent(); // initializing Window
+            //setting default data and preparing databinding
             Transactions = new List<TransactionItem>();
             DataContext = Transactions;
             TraderIDs = new List<string>();
             DataContext = TraderIDs;
+            Transactions.Add(new TransactionItem("", 0m));
+            traderView = null;
 
-
+            //showing login dialog
             LoginWindow lgin = new LoginWindow(); //Login 
             var result = lgin.ShowDialog();
             if (result != true)
@@ -64,12 +53,11 @@ namespace TroedelMarkt
             }
             hTTPManager = lgin.httpManager;
 
-            Transactions.Add(new TransactionItem("", 0m));
+            //updating data
             updateTraderList();
             updateSumm();
+            //selecting firt Transactionitem
             LbTransactions.SelectedIndex = 0;
-
-            traderView = null;
         }
 
         /// <summary>
@@ -77,13 +65,17 @@ namespace TroedelMarkt
         /// </summary>
         private void BtnDeleteElement_Click(object sender, RoutedEventArgs e)
         {
-            if(LbTransactions.SelectedIndex != -1 && LbTransactions.SelectedIndex < Transactions.Count)
+
+            if (LbTransactions.SelectedIndex != -1 && LbTransactions.SelectedIndex < Transactions.Count)
+            {//removing transaction item
                 Transactions.RemoveAt(LbTransactions.SelectedIndex);
-            if(Transactions.Count < 1)
-            {
+            }   
+            if (Transactions.Count < 1)
+            {//adding new item if all have been deleted
                 Transactions.Add(new TransactionItem("", 0m));
                 LbTransactions.SelectedIndex = 0;
             }
+            //updating data
             LbTransactions.Items.Refresh();
             updateSumm();
         }
@@ -93,21 +85,24 @@ namespace TroedelMarkt
         /// </summary>
         private void BtnAddElement_Click(object sender, RoutedEventArgs e)
         {
-            if(LbTransactions.SelectedIndex == -1)
+            if (LbTransactions.SelectedIndex == -1)
             {
-                decimal Value = 0m;
-                try
-                {
-                    Value = decimal.Parse(TBoxElementValue.Text,System.Globalization.CultureInfo.InvariantCulture);
-                }
-                catch (Exception ex) { }
+                //decimal Value = 0m;
+                //try
+                //{
+                //    Value = decimal.Parse(TBoxElementValue.Text, System.Globalization.CultureInfo.InvariantCulture);
+                //}
+                //catch (Exception ex) { }
+                //creating new transactionItem
                 Transactions.Add(new TransactionItem(CBTraderID.Text, 0m));
             }
-            else 
-            { 
-                Transactions.Add(new TransactionItem("", 0m)); 
+            else
+            {
+                //creating and selecting new TransactionItem
+                Transactions.Add(new TransactionItem("", 0m));
                 LbTransactions.SelectedIndex = Transactions.Count;
             }
+            //updating data, selecting item and setting focus
             LbTransactions.Items.Refresh();
             updateSumm();
             LbTransactions.SelectedIndex = Transactions.Count - 1;
@@ -118,28 +113,30 @@ namespace TroedelMarkt
         /// Function for handling click on the ExitTransactionButton
         /// </summary>
         private void BtnExitTransaction_Click(object sender, RoutedEventArgs e)
-        {
-            var result = MessageBox.Show("Sind Sie sicher?\nAlle eingetragenen Elemente werden entfernt.", "Elemente entfernen", MessageBoxButton.OKCancel, MessageBoxImage.Warning,MessageBoxResult.Cancel);
-            if (result is MessageBoxResult.OK) 
-            {
+        {//asking for approval
+            var result = MessageBox.Show("Sind Sie sicher?\nAlle eingetragenen Elemente werden entfernt.", "Elemente entfernen", MessageBoxButton.OKCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
+            if (result is MessageBoxResult.OK)
+            {//deleting and updating data
                 Transactions.Clear();
                 Transactions.Add(new TransactionItem("", 0m));
                 LbTransactions.SelectedIndex = 0;
                 LbTransactions.Items.Refresh();
                 updateSumm();
             }
-            
+
         }
 
         /// <summary>
         /// Updating the summ of all <see cref="TransactionItem"/>s
         /// </summary>
         private void updateSumm()
-        {
+        {//updataing summ 
             decimal summ = 0m;
-            foreach (TransactionItem trans in  Transactions ){
+            foreach (TransactionItem trans in Transactions)
+            {
                 summ += trans.Value;
             }
+            //setting value
             TBlockSumm.Text = $"Summe: {summ.ToString("c")}";
         }
 
@@ -164,21 +161,21 @@ namespace TroedelMarkt
         /// Function for handling click of Make TransactionButton
         /// </summary>
         private async void BtnMakeTransaction_Click(object sender, RoutedEventArgs e)
-        {
+        {//asking for approval
             var result = MessageBox.Show("Sind Sie sicher!\nDie Transaktion kann nicht rückgängig gemacht werden.", "Transaktion durchführen", MessageBoxButton.OKCancel, MessageBoxImage.Asterisk, MessageBoxResult.Cancel);
             if (result is MessageBoxResult.OK)
-            {
-                Transactions.RemoveAll(x => x.Trader == "" & x.Value == 0);
+            {//if action is approved
+                Transactions.RemoveAll(x => x.Trader == "" & x.Value == 0);//remove empty transactionItems
                 foreach (TransactionItem trans in Transactions)
                 {
                     if (TraderIDs.Find(x => x == trans.Trader) == null)
-                    {
+                    {//warning if traderIDs are not correct
                         MessageBox.Show("Einige Händler IDs sind nicht korrekt.\nBitte überprüfen sie die Eingabe", "Eingabe fehlerhaft", MessageBoxButton.OK, MessageBoxImage.Stop);
                         return;
                     }
                 }
                 try
-                {
+                {//selling items
                     await hTTPManager.SellItems(Transactions);
                     Transactions.Clear();
                     Transactions.Add(new TransactionItem("", 0m));
@@ -188,8 +185,8 @@ namespace TroedelMarkt
                     traderView.updateData();
                 }
                 catch (Exception ex)
-                {
-                    MessageBox.Show($"Es ist ein Fehler aufgetreten\n{ex.Message}","Bei Transaktion durchführen");
+                {//notefying of an error
+                    MessageBox.Show($"Es ist ein Fehler aufgetreten\n{ex.Message}", "Bei Transaktion durchführen");
                 }
             }
         }
@@ -198,31 +195,31 @@ namespace TroedelMarkt
         /// Function for handling click of the TraderViewButton
         /// </summary>
         private void BtnTraderView_Click(object sender, RoutedEventArgs e)
-        {
-            if(traderView == null)
-            {
+        {//opening TraderView window
+            if (traderView == null)
+            {//when it has not been activated before
                 traderView = new TraderView(hTTPManager);
                 traderView.Owner = this;
                 traderView.Show();
             }
             else if (traderView.active == false)
-            {
+            {//reactivating
                 traderView = new TraderView(hTTPManager);
                 traderView.Owner = this;
                 traderView.Show();
             }
             else
-            {
+            {//focusing if already open
                 traderView.WindowState = WindowState.Normal;
             }
-            
+
         }
 
         /// <summary>
         /// Function for handling click of UpdateButton
         /// </summary>
         private void BtnUpdate_Click(object sender, RoutedEventArgs e)
-        {
+        {//updating data
             updateTraderList();
             updateSumm();
         }
@@ -231,9 +228,9 @@ namespace TroedelMarkt
         /// Updating TraderList
         /// </summary>
         public async void updateTraderList()
-        {
+        {//reloading trader list
             try
-            {
+            {//getting traders from server
                 List<Trader> tdrs = new List<Trader>(await hTTPManager.GetAllTraders());
                 TraderIDs.Clear();
                 foreach (Trader tdr in tdrs)
@@ -251,7 +248,7 @@ namespace TroedelMarkt
         /// </summary>
         private void CB_keyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key== Key.Enter)
+            if (e.Key == Key.Enter)
             {
                 TBoxElementValue.Focus();
             }
@@ -262,7 +259,7 @@ namespace TroedelMarkt
         /// </summary>
         private void TBValue_keyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Enter)
+            if (e.Key == Key.Enter)
             {
                 BtnAddElement.Focus();
             }
@@ -296,7 +293,7 @@ namespace TroedelMarkt
         public string pattern { get; set; }
         //public bool checkIDExists { get; set; }
         //public TraderIDValidationWrapper Wrapper { get; set; }
-        
+
         public TraderIDValidation() { }
 
         /// <summary>
@@ -306,7 +303,7 @@ namespace TroedelMarkt
         /// <param name="cultureInfo"></param>
         /// <returns>The result of the Validation</returns>
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
-        {
+        {//checking for valid trader IDs
             Regex alphaNum = new Regex(pattern);
             string input = value as string;
             if (alphaNum.IsMatch(input))
