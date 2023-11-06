@@ -49,7 +49,7 @@ namespace TroedelMarkt
         }
 
         /// <summary>
-        /// Funtion for handeling a click on the login button
+        /// Funtion for handling a click on the login button
         /// </summary>
         private async void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
@@ -95,7 +95,7 @@ namespace TroedelMarkt
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             try
-            {
+            {//testing for valid Port
                 int input = int.Parse(value as string);
                 if (0 <= input && input <= 65535)
                 {

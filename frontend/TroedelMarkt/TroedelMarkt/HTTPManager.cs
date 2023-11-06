@@ -281,6 +281,8 @@ namespace TroedelMarkt
         /// <param name="traderID">The <see cref="Trader.TraderID"/> of the new trader</param>
         /// <param name="name">The <see cref="Trader.Name"/> of the new trader</param>
         /// <param name="rate">The <see cref="Trader.ProvisionRate"/> of the new trader</param>
+        /// <exception cref="DuplicateException"></exception>
+        /// <exception cref="ClientException"></exception>
         /// <returns></returns>
         public async Task<Trader> CreateNewTrader(
             string traderID,
