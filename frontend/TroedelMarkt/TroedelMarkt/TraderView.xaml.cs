@@ -176,8 +176,8 @@ namespace TroedelMarkt
             saveDia.AddExtension = true;
             saveDia.DefaultExt = ".csv";
             saveDia.Filter = "Comma-separated values (.csv) |*.csv";
-            var result = saveDia.ShowDialog(this);
-            if(result == true)
+            var hasReturnedPath = saveDia.ShowDialog(this);
+            if(hasReturnedPath.GetValueOrDefault())
             {//when a path was given
                 try
                 {//saving file
