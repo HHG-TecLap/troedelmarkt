@@ -64,7 +64,7 @@
                 <TextBox x:Name="TBoxElementValue" Grid.Column="1" Margin="10,10,10,10" Grid.Row="1" TextWrapping="Wrap" Text="{Binding SelectedItem.Value, StringFormat=C, ConverterCulture=de-De, ElementName=LbTransactions, Mode=TwoWay}" TextChanged="TbUpdateBinding" KeyDown="TBValue_keyDown" GotFocus="TbValue_gotFocus"/>
                 <Button x:Name="BtnAddElement" Content="Artikel hinzufügen" Margin="10,10,10,10" Click="BtnAddElement_Click"  Grid.Row="2"/>
                 <Button x:Name="BtnDeleteElement" Content="Artikel löschen" Margin="10,10,10,10" Click="BtnDeleteElement_Click" Grid.Column="1" Grid.Row="2"/>
-                <Button x:Name="BtnMakeTRansaction" Content="Transaktion abschließen" Width="NaN" Margin="10,10,10,10" Grid.Row="3" Click="BtnMakeTRansaction_Click" />
+                <Button x:Name="BtnMakeTRansaction" Content="Transaktion abschließen" Margin="10,10,10,10" Grid.Row="3" Click="BtnMakeTransaction_Click" />
                 <Button x:Name="BtnExitTransaction" Content="Transaktion abbrechen" Margin="10,10,10,10" Click="BtnExitTransaction_Click" Grid.Column="1" Grid.Row="3"/>
             </Grid>
             <Button x:Name="BtnUpdate" Content="Händlerliste aktualisieren" Margin="10,10,10,10" HorizontalAlignment="Right" Click="BtnUpdate_Click"/>
